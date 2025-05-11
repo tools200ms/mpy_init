@@ -29,11 +29,17 @@ OS running MicroPython based Init system would bring following advantages:
 
 1. **Performance** - having MicroPython's VM already loaded makes scripts (compiled to bytecodes) to be run fast – VM is 'ready' at any time. Moreover, MicroPython is light-weight and optimized for resource-poor devices. Therefore, even in the case of running it on slow hardware, it should be a suitable solution.
 
-2. **Efficient development: debug and testing tools** - unlike shell scripts, Python provides robust Development tools.
+2. **Security through simplification** - shell scripts can be replaced by Python code that is easier to read and audit.
 
-3. **More powerful shell** - traditional shell (bash, ash) can be replaced with [ipython](https://github.com/ipython/ipython) or [Xonsh](https://xon.sh/) - shells developed in Python. These projects keep compatibility with traditional shells (and theirs pros), while providing also Python features (even more Pros!).
+3. **Efficient development: debug and testing tools** - unlike shell scripts, Python provides robust Development tools.
 
-# TODO
+4. **More powerful shell** - traditional shell (bash, ash) can be replaced with [ipython](https://github.com/ipython/ipython) or [Xonsh](https://xon.sh/) - shells developed in Python. These projects keep compatibility with traditional shells (and theirs pros), while providing also Python features (even more Pros!).
 
-- Think about security.
+## Limitations
+
+- Lacks of build-in mechanism for privilege separation.
+
+# References
+
+- The MicroPython Project repository [link](https://github.com/micropython/micropython).
 
