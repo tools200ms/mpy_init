@@ -1,0 +1,14 @@
+[Service]
+description = Load mdevd
+
+# Service order and dependency control:
+before = checkfs fsck
+requires = sysfs dev-mount
+
+# Service defined target:
+provides = dev
+
+# process control
+exec_start = /usr/sbin/dropbear
+pid_file = /var/run/dropbear.pid
+

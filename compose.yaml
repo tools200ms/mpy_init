@@ -1,0 +1,8 @@
+
+services:
+  sandbox:
+    build:
+      context: sandbox
+    volumes:
+      - ./mpy_init:/root/mpy_init:ro
+

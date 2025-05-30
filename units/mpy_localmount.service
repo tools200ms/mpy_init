@@ -1,0 +1,9 @@
+[Service]
+description = Mounts disks and swap according to /etc/fstab.
+
+# Service order and dependency control:
+after = clock lvm modules
+requires = fsck root
+
+# process control
+mpy_package = mpy_init_hwdrivers

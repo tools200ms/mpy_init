@@ -1,0 +1,13 @@
+[Service]
+description = Applies a keymap for the consoles.
+
+# Service order and dependency control:
+requires = localmount
+
+# Service defined target:
+provides = keymaps
+
+# process control
+exec_start = zcat "$KEYMAP" | /bin/busybox loadkmap
+
+

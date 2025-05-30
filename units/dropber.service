@@ -1,0 +1,15 @@
+[Service]
+description = Small SSH server
+
+# Service order and dependency control:
+after = firewall
+wants = logger,dns
+requires = net
+
+# Service defined target:
+provides = ssh_server
+
+# process control
+exec_start = /usr/sbin/dropbear
+pid_file = /var/run/dropbear.pid
+

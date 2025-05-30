@@ -1,0 +1,11 @@
+[Service]
+description = BusyBox NTP daemon
+
+requires = network
+
+# Service defined targets:
+provides = time,online
+
+# process control
+exec_start = /bin/busybox ntpd
+pid_file = /var/run/ntpd.pid

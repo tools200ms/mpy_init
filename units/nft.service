@@ -1,0 +1,14 @@
+[Service]
+description = NFT firewall
+
+# Service order and dependency control:
+after = sysctl
+before = net
+requires = localmount
+
+# Service defined targets:
+provides = firewall
+
+# process control
+exec_start = /usr/sbin/nft -f /etc/nftables.nft
+exec_stop = /usr/sbin/nft flush ruleset

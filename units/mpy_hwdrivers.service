@@ -1,0 +1,9 @@
+[Service]
+description = Network configuration
+
+# Service order and dependency control:
+before = checkfs,fsck
+requires = sysfs,dev
+
+# process control
+mpy_package = mpy_init_hwdrivers

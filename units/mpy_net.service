@@ -1,0 +1,12 @@
+[Service]
+description = Network configuration
+
+# Service order and dependency control:
+after = bootmisc,hwdrivers,modules
+requires = localmount hostname
+
+# Service defined targets:
+provides = network
+
+# process control
+mpy_package = mpy_init_net

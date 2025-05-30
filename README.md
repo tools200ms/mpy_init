@@ -31,7 +31,7 @@ OS running MicroPython based Init system would bring following advantages:
 
 2. **Security through simplification** - shell scripts can be replaced by Python code that is easier to read and audit.
 
-3. **Efficient development: debug and testing tools** - unlike shell scripts, Python provides robust Development tools.
+3. **Efficient development: debug and testing tools** - Python provides robust development and testing tools.
 
 4. **More powerful shell** - traditional shell (bash, ash) can be replaced with [ipython](https://github.com/ipython/ipython) or [Xonsh](https://xon.sh/) - shells developed in Python. These projects keep compatibility with traditional shells (and theirs pros), while providing also Python features (even more Pros!).
 

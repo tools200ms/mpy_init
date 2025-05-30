@@ -1,0 +1,19 @@
+[Service]
+description = Service description
+
+# Service order and dependency control:
+after = service1,targetX
+before = serviceN, targetZ
+wants = service
+requires = service
+
+# Service defined targets:
+provides = target_name1, target_name2
+
+# process control
+exec_start = <executable_path>
+exec_stop = <executable_path>
+exec_reload = <executable_path>
+pid_file = PID file path
+
+mpy_package = mpy_package_name

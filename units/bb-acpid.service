@@ -1,0 +1,9 @@
+[Service]
+description = BusyBox Acpid
+
+after = hwdrivers,modules
+requires = dev,localmount
+
+# process control
+exec_start = /bin/busybox acpid
+pid_file = /run/acpid.pid
