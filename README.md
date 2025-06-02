@@ -1,6 +1,6 @@
-# MicroPython init system
+# MicroPython init system [Proposal + experimental code]
 
-This is a proposal for a Linux init system based on MicroPython.
+This is a proposal for a Linux init system based on MicroPython. **Notice: included source code is an experimental, proof-of-concept working version to be available soon.**
 
 ## Design philosophy
 
