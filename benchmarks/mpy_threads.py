@@ -70,9 +70,9 @@ lock1.acquire()
 lock2 = threading.Lock()
 lock2.acquire()
 
-result0 = {'value': None}
 result1 = {"value": None}
 result2 = {"value": None}
+resultm = {'value': None}
 
 thread1 = threading.Thread(target=cpu_stress_thread, args=('Thread-1', result1, lock1))
 thread2 = threading.Thread(target=cpu_stress_thread, args=('Thread-2', result2, lock2))
@@ -83,7 +83,7 @@ time_start = perf_counter()
 thread1.start()
 thread2.start()
 # Start 'MainThread'
-cpu_stress_thread('MainThread', result0)
+cpu_stress_thread('MainThread', resultm)
 
 lock2.acquire()
 lock1.acquire()
@@ -95,10 +95,10 @@ total_time = time_end - time_start
 
 print(f"Time waited for tasks to finish: {total_time:.2f} sec\n")
 
-last_prime_res0 = result0['value'][-1]
+last_prime_resm = resultm['value'][-1]
 last_prime_res1 = result1['value'][-1]
 last_prime_res2 = result2['value'][-1]
 
 print("Last prime number: ")
-print(f"\nResult0: {last_prime_res0}\nResult1: {last_prime_res1}\nResult2: {last_prime_res2}")
+print(f"\nResultM: {last_prime_resm}\nResult1: {last_prime_res1}\nResult2: {last_prime_res2}")
 
