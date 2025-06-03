@@ -61,7 +61,7 @@ def cpu_stress_thread(name, result, lock=None):
 
 
 # 'const()' function to define constants in MicroPython.
-PRIME_NUMBER_TOTAL_CNT = const(5200)
+PRIME_NUMBER_TOTAL_CNT = const(6300)
 
 print(f"Python implementation: {sys.implementation.name}")
 
@@ -77,14 +77,13 @@ result2 = {"value": None}
 thread1 = threading.Thread(target=cpu_stress_thread, args=('Thread-1', result1, lock1))
 thread2 = threading.Thread(target=cpu_stress_thread, args=('Thread-2', result2, lock2))
 
+print(f"Waiting for threads to finish job ...")
 time_start = perf_counter()
 # Start two threads
 thread1.start()
 thread2.start()
 # Start 'MainThread'
 cpu_stress_thread('MainThread', result0)
-
-print(f"Waiting for threads to finish job ...")
 
 lock2.acquire()
 lock1.acquire()
