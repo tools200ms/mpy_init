@@ -1,39 +1,48 @@
+import sys
+
+if sys.implementation.name == 'micropython':
+        from micropython import const
+else:
+    def const(x):
+        return x
 
 try:
+    import threading
+except ImportError:
+    # If 'threading' is missing (as it's the case for MicroPython),
+    # create 'threading' compatibility object, so
+    # basic thread functions can be used like
+    # in CPhyton
+
     import _thread
 
-    class Empty: pass
-    threading = Empty()
+    class ApiBridge:
+        pass
+
+    threading = ApiBridge()
 
     def thread_wrapper(group=None, target=None, name=None, args=(), kwargs=None, daemon=None):
         if kwargs is not None or daemon is not None:
             raise Exception("Not supported argument")
 
-        t = Empty()
-        t.start = lambda : _thread.start_new_thread(target, args)
+        t = ApiBridge()
+        t.start = lambda: _thread.start_new_thread(target, args)
         return t
+
 
     threading.Thread = thread_wrapper
     threading.Lock = _thread.allocate_lock
 
+try:
+    from time import perf_counter
 except ImportError:
-    import threading
+    # If 'time.perf_counter()' is missing (as it is the case for
+    # micropython), add wrapper function.
+    from time import ticks_us
+    perf_counter = lambda: ticks_us() / 1_000_000.0
 
-
-import time
-
-
-if not hasattr(time, 'ticks_ms'):
-    time.ticks_ms = lambda : int(time.perf_counter() * 1000)
-    time.ticks_diff = lambda t1, t0 : t1 - t0
-
-
-
-PRIME_NUMBER_TOTAL_CNT = 12000
-
-def cpu_stress_thread(name, result, lock = None):
-
-    #while True:
+def cpu_stress_thread(name, result, lock=None):
+    # while True:
     # Very basic CPU-bound task: count prime numbers
     num = 2
     primes = []
@@ -46,48 +55,51 @@ def cpu_stress_thread(name, result, lock = None):
 
     result['value'] = primes
 
+    # release lock if hass been passed:
     if lock != None:
         lock.release()
 
 
-# Start second thread
+# 'const()' function to define constants in MicroPython.
+PRIME_NUMBER_TOTAL_CNT = const(5200)
+
+print(f"Python implementation: {sys.implementation.name}")
+
 lock1 = threading.Lock()
 lock1.acquire()
 lock2 = threading.Lock()
 lock2.acquire()
 
-t_start = time.ticks_ms()
-
+result0 = {'value': None}
 result1 = {"value": None}
-t1 = threading.Thread(target=cpu_stress_thread, args=("Thread-1",result1, lock1))
-
 result2 = {"value": None}
-t2 = threading.Thread(target=cpu_stress_thread, args=("Thread-2",result2, lock2))
 
-t1.start()
-t2.start()
+thread1 = threading.Thread(target=cpu_stress_thread, args=('Thread-1', result1, lock1))
+thread2 = threading.Thread(target=cpu_stress_thread, args=('Thread-2', result2, lock2))
 
-# Main thread also does work
-result0 = {"value": None}
-cpu_stress_thread("MainThread", result0)
+time_start = perf_counter()
+# Start two threads
+thread1.start()
+thread2.start()
+# Start 'MainThread'
+cpu_stress_thread('MainThread', result0)
 
+print(f"Waiting for threads to finish job ...")
 
-print("waiting ...")
-r_start = time.ticks_ms()
 lock2.acquire()
 lock1.acquire()
-t_end = time.ticks_ms()
+
+time_end = perf_counter()
+
 # total time
-t_time = time.ticks_diff(t_end, t_start)
-# resting time
-r_time = time.ticks_diff(t_end, r_start)
-print(f"Waited for thread: {r_time} ms, total time: {t_time/1000:.4f} sec\nTime % spend on waiting for thread: {100*(r_time/t_time):3.2f}%")
+total_time = time_end - time_start
 
-print("Result0: ")
-for p in result0['value'][-10:]: print(str(p), end=' ')
-print("\nResult1: ")
-for p in result1['value'][-10:]: print(str(p), end=' ')
-print("\nResult2: ")
-for p in result2['value'][-10:]: print(str(p), end=' ')
+print(f"Time waited for tasks to finish: {total_time:.2f} sec\n")
 
-print("\n")
+last_prime_res0 = result0['value'][-1]
+last_prime_res1 = result1['value'][-1]
+last_prime_res2 = result2['value'][-1]
+
+print("Last prime number: ")
+print(f"\nResult0: {last_prime_res0}\nResult1: {last_prime_res1}\nResult2: {last_prime_res2}")
+
