@@ -1,4 +1,5 @@
 [Service]
+# Not necessary for AMR boards
 description = BusyBox Acpid
 
 after = hwdrivers,modules

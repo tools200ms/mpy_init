@@ -9,6 +9,6 @@ requires = sysfs dev-mount
 provides = dev
 
 # process control
-exec_start = /usr/sbin/dropbear
-pid_file = /var/run/dropbear.pid
+exec_start = /bin/mdevd -O4
+pid_file = /run/mdevd.pid
 
