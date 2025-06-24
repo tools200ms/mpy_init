@@ -1,0 +1,5 @@
+[Service]
+description = Initialise /sys fielsystem
+
+# process control
+mpy_package = mpy_init_sys

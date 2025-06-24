@@ -2,8 +2,9 @@
 description = Mounts disks and swap according to /etc/fstab.
 
 # Service order and dependency control:
-after = clock lvm modules
-requires = fsck root
+after = modules
+requires = fsck
+provides = localmount
 
 # process control
-mpy_package = mpy_init_hwdrivers
+mpy_package = mpy_init_localmount

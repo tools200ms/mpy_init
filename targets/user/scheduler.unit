@@ -1,0 +1,8 @@
+[Service]
+description = Launch task scheduler
+
+# Service defined targets:
+provides = scheduler
+
+# process control
+mpy_package = mpy_init_scheduler

@@ -1,0 +1,8 @@
+[Service]
+description = Load modules.
+
+# Service order and dependency control:
+provides = modules
+
+# process control
+mpy_package = mpy_init_modules

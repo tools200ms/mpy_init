@@ -4,7 +4,8 @@ description = BusyBox NTP daemon
 requires = network
 
 # Service defined targets:
-provides = time,online
+provides = time
+defines = online
 
 # process control
 exec_start = /bin/busybox ntpd

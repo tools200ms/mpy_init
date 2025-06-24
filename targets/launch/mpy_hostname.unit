@@ -1,5 +1,7 @@
 [Service]
-description = Setup hostname
+description = Set hostname
+
+provides = launch
 
 # process control
 mpy_package = mpy_init_hostname

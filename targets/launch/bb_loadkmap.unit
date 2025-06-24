@@ -9,5 +9,3 @@ provides = keymaps
 
 # process control
 exec_start = zcat "$KEYMAP" | /bin/busybox loadkmap
-
-

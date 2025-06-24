@@ -7,7 +7,7 @@ wants = logger,dns
 requires = net
 
 # Service defined target:
-provides = ssh_server
+provides = sshd
 
 # process control
 exec_start = /usr/sbin/dropbear

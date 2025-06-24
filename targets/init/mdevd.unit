@@ -7,6 +7,7 @@ requires = sysfs dev-mount
 
 # Service defined target:
 provides = dev
+defines = init
 
 # process control
 exec_start = /bin/mdevd -O4

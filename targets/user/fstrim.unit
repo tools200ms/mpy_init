@@ -1,0 +1,8 @@
+[Service]
+description = Ensure NAND storage is discarted
+
+# Service defined targets:
+provides = fstrim
+
+# process control
+mpy_package = mpy_init_fstrim

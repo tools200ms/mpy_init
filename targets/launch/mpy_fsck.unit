@@ -2,7 +2,8 @@
 description = Load modules.
 
 # Service order and dependency control:
-before hwclock hwdrivers
+after = modules
+provides = fsck
 
 # process control
 mpy_package = mpy_init_modules

@@ -1,9 +1,8 @@
 [Service]
-description = Network configuration
+description = Autodetection of hardware disabled from boot cmdline
 
 # Service order and dependency control:
-before = checkfs,fsck
-requires = sysfs,dev
+requires = sysfs,proc,dev
 
 # process control
 mpy_package = mpy_init_hwdrivers

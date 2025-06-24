@@ -6,7 +6,7 @@ after = bootmisc,hwdrivers,modules
 requires = localmount hostname
 
 # Service defined targets:
-provides = network
+defines = network
 
 # process control
 mpy_package = mpy_init_net
