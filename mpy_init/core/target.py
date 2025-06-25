@@ -1,15 +1,33 @@
 
 
-from mpy_init.unit import Unit
 
-
-class Target(Unit):
+class Target:
     def __init__(self, requires: tuple(str), wants: tuple(str) = None):
         pass
 
-class Sysinit(Target):
+class PreDefinedTarget(Target):
+    def __init__(self):
+        pass
+
+class init(PreDefinedTarget):
     def __init__(self):
         self.__init__(('dev',))
+
+class launch(PreDefinedTarget):
+    def __init__(self):
+        pass
+
+class network(PreDefinedTarget):
+    def __init__(self):
+        pass
+
+class network_online(PreDefinedTarget):
+    def __init__(self):
+        pass
+
+class user(PreDefinedTarget):
+    def __init__(self):
+        pass
 
 # 1. Mount Essential Filesystems:
 # /proc, /sys, /dev, /run

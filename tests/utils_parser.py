@@ -32,11 +32,11 @@ class TestConfigParser(unittest.TestCase):
         }
         self.assertEqual(Parser(input_text).parse(), expected)
 
-    def test_ignore_non_alphanumeric_labels(self):
+    def test_ignore_labels_prefixed_with_equal_char(self):
         input_text = """
         label1 = value1
-        label-2 = value2
-        label_3 = value3
+        =label2 = value2
+        ==-label_3 = value3
         """
         expected = {
             "label1": "value1"

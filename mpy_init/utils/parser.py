@@ -1,9 +1,12 @@
 
 class Parser:
     _config: str
+    _file_path: str
 
-    def __init__(self, config: str):
+    def __init__(self, config: str, file_path: str = None):
         self._config = config
+        self._file_path = file_path
+
 
     @classmethod
     def load(cls, file_path: str) -> 'Parser':
@@ -21,7 +24,7 @@ class Parser:
             ValueError: If the configuration format is invalid
         """
         with open(file_path, 'r') as f:
-            return cls(f.read())
+            return cls(f.read(), file_path)
 
         # End of function
 
@@ -31,23 +34,24 @@ class Parser:
         Parse configuration text in 'label = value' format.
         Only lines where label starts with a letter are processed.
     
-        Args:
-            text (str): Input text to parse
-        
+
         Returns:
             dict: Dictionary containing parsed label-value pairs
         
         Raises:
             ValueError: If a non-ignored line doesn't contain exactly one '=' character
         """
-        result = {}
-    
-        for line in self._config.splitlines():
+        result: dict = {}
+
+        for line_no, line in enumerate(self._config.splitlines(), 1):
+        
             # Skip empty lines
             line = line.strip()
-            if not line:
+
+            # Ignore empty lines, or comment lines
+            if not line or line[0] == '#':
                 continue
-            
+
             # Skip lines not starting with a letter
             if not line[0].isalpha():
                 continue
@@ -55,12 +59,23 @@ class Parser:
             # Split by = and let ValueError propagate up
             label, value = line.split('=', 1)
             label, value = label.strip(), value.strip()
-
-            if label == '' or value == '':
-                raise ValueError(f"Invalid line: '{line}'")
-
-        # Verify label is alphanumeric
-            if label.isalnum():
-                result[label] = value
             
+            if label == '' or value == '':
+                raise ValueError(f"Invalid line {line_no} in {self._file_path}: '{line}'")
+
+            if len(label) > 32:
+                raise ValueError(
+                    f"Label '{label}' on line {line_no} in {self._file_path} exceeds maximum length of 32 characters")
+
+            if len(value) > 1024:
+                raise ValueError(
+                    f"Value for label '{label}' on line {line_no} in {self._file_path} exceeds maximum length of 1024 characters")
+
+            # Verify the label is alphanumeric
+            if not all(c.isalnum() or c == '_' for c in label):
+                raise ValueError(
+                f"Label '{label}' on line {line_no} in {self._file_path} contains illegal characters - only alphanumeric characters and underscores are allowed")
+
+            result[label] = value
+
         return result

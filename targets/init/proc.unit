@@ -3,4 +3,4 @@ description = Initialise /proc fielsystem
 
 
 # process control
-mpy_package = mpy_init_proc
+mpy_package = procfs
