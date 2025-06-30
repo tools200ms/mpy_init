@@ -5,4 +5,4 @@ description = Launch task scheduler
 provides = scheduler
 
 # process control
-mpy_package = mpy_init_scheduler
+mpy_package = scheduler

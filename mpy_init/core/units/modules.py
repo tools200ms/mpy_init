@@ -1,7 +1,7 @@
-from mpy_init.core.unit import PreDefinedUnit
+from mpy_init.core.unit import MPUnit
 
 
-class Modules(PreDefinedUnit):
+class modules(MPUnit):
     """
     Manages kernel module loading during system initialization.
     Loads additional kernel modules needed for hardware support
@@ -10,4 +10,4 @@ class Modules(PreDefinedUnit):
     """
 
     def __init__(self):
-        super().__init__(('dev',))
+        super().__init__()

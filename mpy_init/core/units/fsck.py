@@ -1,7 +1,7 @@
-from mpy_init.core.unit import PreDefinedUnit
+from mpy_init.core.unit import MPUnit
 
 
-class fsck(PreDefinedUnit):
+class fsck(MPUnit):
     """
     Performs filesystem checks and repairs if necessary.
     Remounts filesystems as read-write and initializes swap space.
@@ -9,4 +9,4 @@ class fsck(PreDefinedUnit):
     """
 
     def __init__(self):
-        super().__init__(('early', 'dev_mount'))
+        super().__init__()

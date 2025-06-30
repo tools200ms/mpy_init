@@ -2,10 +2,28 @@
 class Parser:
     _config: str
     _file_path: str
+    _node_keys: dict = {'after': None,
+                        'before': None,
+                        'wants': None,
+                        'requires': None,
+                        'defines': None}
+    _ex_keys: dict = {'exec_start': None,
+                      'exec_stop': None,
+                      'exec_reload': None,
+                      'pid_file': None}
+    _mp_keys: dict = {'mpy_package': None}
+    _set_keys: dict = {'description': None}
 
     def __init__(self, config: str, file_path: str = None):
         self._config = config
         self._file_path = file_path
+
+        ExecUnit
+        self._serch_key = self._node_keys
+
+    def find(self, name: str):
+
+        if name in self._serch_key:
 
 
     @classmethod
@@ -41,6 +59,9 @@ class Parser:
         Raises:
             ValueError: If a non-ignored line doesn't contain exactly one '=' character
         """
+        
+        
+
         result: dict = {}
 
         for line_no, line in enumerate(self._config.splitlines(), 1):

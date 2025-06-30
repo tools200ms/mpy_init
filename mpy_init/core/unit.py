@@ -1,41 +1,73 @@
+from abc import ABC, abstractmethod
 
-class Unit:
-    description: str
-    before: str
-    after: str
-    requires: str
-    wants: str
-    defines: str
-    provides: str
-    exec_start: str
-    exec_stop: str
-    pid_file: str
-    mpy_package: str
+
+class Unit(ABC):
+
+    @abstractmethod
+    def run(self) -> None:
+        """Execute unit action"""
+        pass
 
     @staticmethod
-    def factory(description: str = "", before: str = "", after: str = "",
-                requires: str = "", wants: str = '', defines: str = "", provides: str = "",
-                exec_start: str = "", exec_stop: str = "",
-                pid_file: str = "", mpy_package: str = "") -> 'PreDefinedUnit':
+    def validateName(str: str):
+        if not str or not str[0].isalpha():
+            return False
+        return str.isalnum()
 
-        unit = PreDefinedUnit()
+class ExecUnit(Unit):
+    _description: str
+    _exec_start: str
+    _exec_stop: str
+    _pid_file: str
 
-        unit.description = description
-        unit.before = before
-        unit.after = after
-        unit.requires = requires
-        unit.wants = wants
-        unit.defines = defines
-        unit.provides = provides
-        unit.exec_start = exec_start
-        unit.exec_stop = exec_stop
-        unit.pid_file = pid_file
-        unit.mpy_package = mpy_package
-        
+    def __init__(self, exec_start: str, exec_stop: str = "",
+                 pid_file: str = "", description: str = ""):
+        self._description = description
+        self._exec_start = exec_start
+        self._exec_stop = exec_stop
+        self._pid_file = pid_file
 
-        return unit
+    def run(self) -> None:
+        pass
+
+    @property
+    def description(self) -> str:
+        return self._description
+
+    @description.setter
+    def description(self, value: str):
+        self._description = value
+
+    @property
+    def exec_start(self) -> str:
+        return self._exec_start
+
+    @exec_start.setter
+    def exec_start(self, value: str):
+        self._exec_start = value
+
+    @property
+    def exec_stop(self) -> str:
+        return self._exec_stop
+
+    @exec_stop.setter
+    def exec_stop(self, value: str):
+        self._exec_stop = value
+
+    @property
+    def pid_file(self) -> str:
+        return self._pid_file
+
+    @pid_file.setter
+    def pid_file(self, value: str):
+        self._pid_file = value
 
 
-class PreDefinedUnit(Unit):
-    pass
+
+class MPUnit(Unit):
+    def __init__(self):
+        pass
+
+    def run(self) -> None:
+        pass
 

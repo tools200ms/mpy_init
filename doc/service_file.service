@@ -9,6 +9,7 @@ requires = service
 
 # Service defined targets:
 provides = target_name1, target_name2
+defines = virtual service
 
 # process control
 exec_start = <executable_path>

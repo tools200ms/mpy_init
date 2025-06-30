@@ -7,5 +7,5 @@ before = fsck
 provides = clock
 
 # process control
-mpy_package = mpy_launch_sclock
+mpy_package = sclock
 

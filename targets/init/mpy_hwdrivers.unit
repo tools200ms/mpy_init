@@ -5,4 +5,4 @@ description = Autodetection of hardware disabled from boot cmdline
 requires = sysfs,proc,dev
 
 # process control
-mpy_package = mpy_init_hwdrivers
+mpy_package = hwdrivers

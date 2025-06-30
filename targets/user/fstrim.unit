@@ -5,4 +5,4 @@ description = Ensure NAND storage is discarted
 provides = fstrim
 
 # process control
-mpy_package = mpy_init_fstrim
+mpy_package = fstrim

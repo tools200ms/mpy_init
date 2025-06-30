@@ -7,4 +7,4 @@ requires = fsck
 provides = localmount
 
 # process control
-mpy_package = mpy_init_localmount
+mpy_package = localmount

@@ -5,4 +5,4 @@ description = Load modules.
 provides = modules
 
 # process control
-mpy_package = mpy_init_modules
+mpy_package = modules

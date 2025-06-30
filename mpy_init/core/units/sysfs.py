@@ -1,10 +1,12 @@
-from mpy_init.core.unit import PreDefinedUnit
+from mpy_init.core.unit import MPUnit
 
 
-class SysFS(PreDefinedUnit):
+class sysfs(MPUnit):
+
+
     """
     Mounts essential /sys filesystem providing kernel and hardware information
     """
 
     def __init__(self):
-        super().__init__(('early',))
+        super().__init__()

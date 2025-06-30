@@ -9,4 +9,4 @@ requires = localmount hostname
 defines = network
 
 # process control
-mpy_package = mpy_init_net
+mpy_package = net

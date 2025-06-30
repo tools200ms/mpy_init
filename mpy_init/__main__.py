@@ -3,9 +3,7 @@ import sys
 import logging
 
 from mpy_init.utils.parser import Parser
-from mpy_init.core.unit import Unit, PreDefinedUnit
-
-import mpy_init.core.units as predef_units
+from mpy_init.core.unit import Unit, MPUnit
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -27,7 +25,7 @@ def main() -> int:
     #     print("Usage: mpy_init <directory>", file=sys.stderr)
     #     return 1
 
-    directory = '../targets'
+    directory = './targets'
 
     unit_conf = None
     unit = None
@@ -44,12 +42,15 @@ def main() -> int:
                 unit_conf = Parser.load(file_path).parse()
 
                 if 'mpy_package' in unit_conf:
+                    buildin_unit_name = unit_conf['mpy_package']
+
                     try:
-                        print(len(PreDefinedUnit.__subclasses__()))
-                        cls = getattr(predef_units, unit_conf['mpy_package'])
+                        import mpy_init.core.units
+
+                        cls = getattr(mpy_init.core.units, buildin_unit_name)
                         unit = cls()
                     except AttributeError:
-                        print(f"Package '{unit_conf['mpy_package']}' not found in predefined units", file=sys.stderr)
+                        print(f"Package '{buildin_unit_name}' not found in predefined units", file=sys.stderr)
                         return 1
                 else:
                     try:

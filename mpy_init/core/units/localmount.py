@@ -1,10 +1,9 @@
 from mpy_init.core.unit import MPUnit
 
 
-class devmount(MPUnit):
+class localmount(MPUnit):
     """
-    Mounts essential /dev filesystem and its special files
+    A predefined unit for managing local mount operations.
     """
-
     def __init__(self):
         super().__init__()

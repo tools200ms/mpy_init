@@ -1,11 +1,11 @@
-from mpy_init.core.unit import PreDefinedUnit
+from mpy_init.core.unit import MPUnit
 
 
-class Scheduler(PreDefinedUnit):
+class scheduler(MPUnit):
     """
     Unit responsible for system scheduling and task management.
     Handles initialization and configuration of system scheduler.
     """
 
     def __init__(self):
-        super().__init__(('modules',))
+        super().__init__()

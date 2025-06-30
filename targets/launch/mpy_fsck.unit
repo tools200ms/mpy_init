@@ -6,4 +6,4 @@ after = modules
 provides = fsck
 
 # process control
-mpy_package = mpy_init_modules
+mpy_package = fsck
