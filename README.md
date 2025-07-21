@@ -25,9 +25,20 @@ Proposed MicroPython-based init system, called `mpy_init`, is designed to run on
 
 We believe that the above scope defines a good balance in what a modern init system should do, what not.
 
-## Advantages
+## Features
 
-OS running MicroPython based Init system would bring the following advantages: 
+Micropython brings two interesting features to initsystem: 
+1. **API out-of-the-box** — Micropython's VM is available since boot time throughout the entire OS run-time. Integration with init-system allows on bringing in API and web access that is handled by isolated VM. That simplifies VM/device initialization and configuration over network providing layer of security.
+
+2. **Display/keypad support for SbC configurations** — if run on SbC (Single board Computer — such as Raspberry PI) and specific peripherals are attached: `mpy_init` by using Micropython's hardware drivers can for instance:
+   - display a status and other information about a device on a small display
+   - can perform authentification based on physical button press
+
+## Security
+
+Micropython lacks a built-in mechanism for process separation. Therefore project elevates Unix kernel features to ensure proper privilabe and separation handling.
+
+
 
 1. **Performance** - having MicroPython's VM already loaded makes scripts (compiled to bytecodes) to be run fast. Moreover, MicroPython is light-weight and optimized for resource-poor devices. Therefore, even in the case of running it on slow hardware, it should be a suitable solution.
 
@@ -37,11 +48,10 @@ OS running MicroPython based Init system would bring the following advantages:
 
 4. **More powerful shell** - traditional shell (bash, ash) can be replaced with [ipython](https://github.com/ipython/ipython) or [Xonsh](https://xon.sh/) - shells developed in Python. These projects keep compatibility with traditional shells (and theirs pros), while providing also Python features (even more Pros!).
 
-## Limitations
 
-- Lack of build-in mechanism for process separation.
+
+
 
 # References
 
 - The MicroPython Project repository [link](https://github.com/micropython/micropython).
-
