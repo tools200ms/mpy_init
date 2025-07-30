@@ -1,4 +1,5 @@
 import unittest
+
 from mpy_init.utils.parser import Parser
 
 
@@ -6,7 +7,7 @@ class TestConfigParser(unittest.TestCase):
     def test_valid_simple_input(self):
         input_text = "label = value"
         expected = {"label": "value"}
-        self.assertEqual(Parser(input_text).parse(), expected)
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)
 
     def test_multiple_valid_lines(self):
         input_text = """
@@ -17,7 +18,7 @@ class TestConfigParser(unittest.TestCase):
             "label1": "value1",
             "label2": "value2"
         }
-        self.assertEqual(Parser(input_text).parse(), expected)
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)
 
     def test_ignore_non_letter_start(self):
         input_text = """
@@ -30,7 +31,7 @@ class TestConfigParser(unittest.TestCase):
             "label1": "value1",
             "label2": "value4"
         }
-        self.assertEqual(Parser(input_text).parse(), expected)
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)
 
     def test_ignore_labels_prefixed_with_equal_char(self):
         input_text = """
@@ -41,30 +42,30 @@ class TestConfigParser(unittest.TestCase):
         expected = {
             "label1": "value1"
         }
-        self.assertEqual(Parser(input_text).parse(), expected)
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)
 
     def test_preserve_value_spaces(self):
         input_text = "label = value with spaces"
         expected = {"label": "value with spaces"}
-        self.assertEqual(Parser(input_text).parse(), expected)
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)
 
     def test_trim_spaces(self):
         input_text = "label = value with spaces   "
         expected = {"label": "value with spaces"}
-        self.assertEqual(Parser(input_text).parse(), expected)
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)
 
         input_text = "   label = value with spaces   "
         expected = {"label": "value with spaces"}
-        self.assertEqual(Parser(input_text).parse(), expected)
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)
 
     def test_empty_input(self):
         self.assertEqual(Parser("").parse(), {})
-        self.assertEqual(Parser("\n\n\n").parse(), {})
+        self.assertEqual(Parser.loadConfigTxt("\n\n\n").parse(), {})
 
     def test_value_with_equals(self):
         input_text = "label = value = with = equals"
         expected = {"label": "value = with = equals"}
-        self.assertEqual(Parser(input_text).parse(), expected)
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)
 
     def test_invalid_line_raises_valueerror(self):
         invalid_inputs = [
@@ -76,12 +77,10 @@ class TestConfigParser(unittest.TestCase):
 
         for invalid_input in invalid_inputs:
             with self.assertRaises(ValueError):
-                Parser(invalid_input).parse()
+                Parser.loadConfigTxt(invalid_input, 'test').parse()
 
-
-if __name__ == '__main__':
-    unittest.main()
-
+#if __name__ == '__main__':
+ #   unittest.main()
 
     def test_ignore_empty_lines_and_comments(self):
         input_text = """
@@ -103,7 +102,7 @@ if __name__ == '__main__':
             "label2": "value2",
             "label3": "value3"
         }
-        self.assertEqual(Parser(input_text).parse(), expected)
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)
 
 
     def test_only_comments_and_empty_lines(self):
@@ -116,7 +115,7 @@ if __name__ == '__main__':
 
         """
 
-        self.assertEqual(Parser(input_text).parse(), {})
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), {})
 
 
     def test_mixed_content_with_comments(self):
@@ -138,4 +137,4 @@ if __name__ == '__main__':
             "key2": "value2",
             "key3": "value3"
         }
-        self.assertEqual(Parser(input_text).parse(), expected)
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)

@@ -1,78 +1,31 @@
-class ParserError:
-    def __init__(self, label: str):
-        self._label = label
+import os
 
-    def format_err_msg(message: str, line_no: int, file_path: str) -> str:
-        pass
-
-
-class ParserEmptyError (ParserError):
-    def format_err_msg(self, line_no: int, file_path: str) -> str:
-        return "Label cannot be empty"
-
-class ParserTooLongError (ParserError):
-    def format_err_msg(self, line_no: int, file_path: str) -> str:
-        return f"Label '{self._label[0:36]} ...' exceeds maximum length of 32 characters"
-
-class ParserStartWithLetterError (ParserError):
-    def format_err_msg(self, line_no: int, file_path: str) -> str:
-        pass
-
-class ParserHasIllegalName (ParserError):
-    def format_err_msg(self, line_no: int, file_path: str) -> str:
-        f"Label '{self._label}' contains illegal characters - only alphanumeric characters and underscores are allowed"
+from mpy_init.core.label import Label
+from mpy_init.core.unit import Unit
+from mpy_init.utils.parser_errors import ConfigParserError, ParserErrorList
 
 
 class Parser:
-    _config: str
-    _file_path: str
+    MAX_FILE_SIZE = 1024 * 1024  # 1 MB
+
+    _config_txt: str
     _unit_name: str
 
-    def __init__(self, config: str, file_path: str = None):
-        self._config = config
-        self._file_path = file_path
+    def __init__(self, config_txt: str, unit_name: str):
+        self._config_txt = config_txt
 
-        #ExecUnit
-        self._serch_key = self._node_keys
+        if not Unit.validateName(unit_name):
+            raise ValueError(f"Invalid unit name: {unit_name}\nUnit name must be alpha-numeric.")
 
-        # Extract and validate base name
-        base_name = file_path.rsplit('/', 1)[-1]
-
-        # Validate file extension
-        if not base_name.endswith('.unit'):
-            raise ValueError(f"Invalid file extension - must be '.unit': {file_path}")
-
-        self._unit_name = base_name.rsplit('.', 1)[0]
-        if not self._unit_name[0].isalpha():
-            raise ValueError(f"File name must start with a letter: {base_name}")
-
-        if not self._unit_name.isalnum():
-            raise ValueError(f"File name must be alphanumeric: {base_name}")
-
-    """
-    Verify that the label is an alphanumeric string with an allowed '_' character starting with a letter
-    """
-    @staticmethod
-    def check_label(label: str):
-        if not label:
-            raise ParserEmptyError(label)
-
-        if len(label) > 32:
-            raise ParserTooLongError(label)
-
-        if not label[0].isalpha():
-            raise ParserStartWithLetterError(label)
-        
-        if not all(c.isalnum() or c == '_' for c in label):
-            raise ParserHasIllegalName(label)
-
-    def find(self, name: str):
-
-        if name in self._serch_key:
+        self._unit_name = unit_name
 
 
     @classmethod
-    def load(cls, file_path: str) -> 'Parser':
+    def loadConfigTxt(cls, config_txt: str, unit_name: str) -> 'Parser':
+        return cls(config_txt, unit_name)
+
+    @classmethod
+    def loadFile(cls, file_path: str) -> 'Parser':
         """
         Create a Parser instance by reading configuration from a file.
 
@@ -87,8 +40,18 @@ class Parser:
             ValueError: If the configuration format is invalid or file name format is incorrect
         """
 
+        # Extract and validate base name
+        base_name = file_path.rsplit('/', 1)[-1]
+
+        # Validate file extension
+        if not base_name.endswith('.unit'):
+            raise ValueError(f"Invalid file extension - must be '.unit': {file_path}")
+
+        if os.path.getsize(file_path) > cls.MAX_FILE_SIZE:
+            raise ValueError(f"File size exceeds the maximum limit of {cls.MAX_FILE_SIZE} bytes.")
+
         with open(file_path, 'r') as f:
-            return cls(f.read(), file_path)
+            return cls(f.read(), base_name.rsplit('.', 1)[0], file_path)
 
         # End of function
 
@@ -105,7 +68,7 @@ class Parser:
         Raises:
             ValueError: If a non-ignored line doesn't contain exactly one '=' character
         """
-        
+        errors = []
         result: dict = {}
 
         for line_no, line in enumerate(self._config.splitlines(), 1):
@@ -122,17 +85,24 @@ class Parser:
             # 'label' is striped with 'line.strip()'
             value = value.strip()
 
-            Parser.check_label(label)
-            
-            if value == '':
-                raise ValueError(ParserError.print_error(f"Invalid line: '{line}'", line_no, self._file_path))
+            try:
+                Label.check_label(label)
+            except ConfigParserError as cp_err:
+                cp_err.addLineNo(line_no)
+                errors.append(cp_err)
 
-            if len(value) > 1024:
-                raise ValueError(
-                    ParserError.print_error(f"Value for label '{label}' exceeds maximum length of 1024 characters",
-                                            line_no, self._file_path))
+            # if value == '':
+            #     raise ValueError(ParserError.print_error(f"Invalid line: '{line}'", line_no, self._file_path))
+            #
+            # if len(value) > 1024:
+            #     raise ValueError(
+            #         ParserError.print_error(f"Value for label '{label}' exceeds maximum length of 1024 characters",
+            #                                 line_no, self._file_path))
+
+            if len(errors) > 0:
+                raise ParserErrorList(errors)
 
             result[label] = value
 
-
-        return UnitPrototype(result)
+        return result
+        #UnitPrototype(result)
