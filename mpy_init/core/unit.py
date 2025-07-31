@@ -23,7 +23,6 @@ class Unit(ABC):
         return str.isalnum()
 
 
-
 class ExecUnit(Unit):
    
     _exec_start: str
@@ -77,8 +76,13 @@ class ExecUnit(Unit):
 
 
 class MPUnit(Unit):
-    def __init__(self):
-        pass
+    @staticmethod
+    def find(name, value):
+        try:
+            import mpy_init.core.units
+            return getattr(mpy_init.core.units, name)
+        except AttributeError:
+            return None
 
     def run(self) -> None:
         pass

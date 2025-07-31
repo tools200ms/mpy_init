@@ -2,11 +2,14 @@ import os
 
 from mpy_init.core.label import Label
 from mpy_init.core.unit import Unit
-from mpy_init.utils.parser_errors import ConfigParserError, ParserErrorList
+from mpy_init.core.unit_prototype import UnitPrototype
+from mpy_init.utils.parser_errors import ConfigParserError, ParserErrorList, MisformattedLineError
 
 
 class Parser:
     MAX_FILE_SIZE = 1024 * 1024  # 1 MB
+    MAX_LABEL_LEN = 32
+    MAX_VALUE_LEN = 2048
 
     _config_txt: str
     _unit_name: str
@@ -56,7 +59,7 @@ class Parser:
         # End of function
 
     
-    def parse(self) -> dict:
+    def parse(self, execept=None) -> dict:
         """
         Parse configuration text in 'label = value' format.
         Only lines where label starts with a letter are processed.
@@ -68,10 +71,11 @@ class Parser:
         Raises:
             ValueError: If a non-ignored line doesn't contain exactly one '=' character
         """
+        unit_prototype = UnitPrototype()
         errors = []
         result: dict = {}
 
-        for line_no, line in enumerate(self._config.splitlines(), 1):
+        for line_no, line in enumerate(self._config_txt.splitlines(), 1):
         
             # Skip empty lines
             line = line.strip()
@@ -80,13 +84,15 @@ class Parser:
             if not line or line[0] == '#':
                 continue
 
-            # Split by = and let ValueError propagate up
-            label, value = line.split('=', 1)
-            # 'label' is striped with 'line.strip()'
-            value = value.strip()
-
             try:
-                Label.check_label(label)
+                # Split by = and let ValueError propagate up
+                # Can throw: ValueError: not enough values to unpack (expected 2, got 1)
+                label, value = line.split('=', 1)
+                label, value = label.rstrip(), value.lstrip()
+
+                unit_prototype.setLabel(label, value)
+            except ValueError:
+                errors.append(MisformattedLineError(line_no))
             except ConfigParserError as cp_err:
                 cp_err.addLineNo(line_no)
                 errors.append(cp_err)
@@ -105,4 +111,3 @@ class Parser:
             result[label] = value
 
         return result
-        #UnitPrototype(result)

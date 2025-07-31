@@ -9,10 +9,15 @@ class ParserErrorList (Exception):
         self._file_path = file_path
 
 
+
 class ConfigParserError (Exception):
     _line_no = -1
 
     def addLineNo(self, line_no: int):
+        self._line_no = line_no
+
+class MisformattedLineError(ConfigParserError):
+    def __init__(self, line_no):
         self._line_no = line_no
 
 class LabelError(ConfigParserError):
@@ -35,3 +40,14 @@ class LabelDoesNotStartWithLetterError(LabelError):
 class LabelHasIllegalName(LabelError):
     def __str__(self):
         f"Label '{self._label}' contains illegal characters - only alphanumeric characters and underscores are allowed"
+
+class UnknownLabelError(LabelError):
+    def __str__(self):
+        return f"Unknown label '{self._label_name}'"
+
+
+
+class ParserValueTooLongError(LabelError):
+    def __str__(self):
+        f"Too long value for label: '{self._label_name}'"
+
