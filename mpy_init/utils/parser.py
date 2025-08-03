@@ -3,7 +3,7 @@ import os
 from mpy_init.core.label import Label
 from mpy_init.core.unit import Unit
 from mpy_init.core.unit_prototype import UnitPrototype
-from mpy_init.utils.parser_errors import ConfigParserError, ParserErrorList, MisformattedLineError
+from mpy_init.utils.parser_errors import ConfigParserError, ParserSrvNameError, ParserErrorList
 
 
 class Parser:
@@ -12,15 +12,11 @@ class Parser:
     MAX_VALUE_LEN = 2048
 
     _config_txt: str
-    _unit_name: str
 
     def __init__(self, config_txt: str, unit_name: str):
         self._config_txt = config_txt
 
-        if not Unit.validateName(unit_name):
-            raise ValueError(f"Invalid unit name: {unit_name}\nUnit name must be alpha-numeric.")
-
-        self._unit_name = unit_name
+        self._unit_prototype = UnitPrototype(unit_name)
 
 
     @classmethod
@@ -71,7 +67,6 @@ class Parser:
         Raises:
             ValueError: If a non-ignored line doesn't contain exactly one '=' character
         """
-        unit_prototype = UnitPrototype()
         errors = []
         result: dict = {}
 
@@ -90,12 +85,18 @@ class Parser:
                 label, value = line.split('=', 1)
                 label, value = label.rstrip(), value.lstrip()
 
-                unit_prototype.setLabel(label, value)
-            except ValueError:
-                errors.append(MisformattedLineError(line_no))
-            except ConfigParserError as cp_err:
-                cp_err.addLineNo(line_no)
-                errors.append(cp_err)
+                self._unit_prototype.setLabel(label, value)
+
+            except (ParserSrvNameError, ConfigParserError) as parser_err:
+                # Errors encountered while parsing value:
+                # add line no. that has been not available in validator:
+                parser_err.addLineNo(line_no)
+                # Add a label name that has been not available in validator:
+                if isinstance(parser_err, ParserSrvNameError):
+                    parser_err.addLabel(label)
+                # add errors to the list and continue parsing so all syntax errors
+                # are cached
+                errors.append(parser_err)
 
             # if value == '':
             #     raise ValueError(ParserError.print_error(f"Invalid line: '{line}'", line_no, self._file_path))

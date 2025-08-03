@@ -4,7 +4,13 @@
 Unit prototype class providing base functionality for unit configuration and validation.
 """
 from mpy_init.core.label import Label
-from mpy_init.utils.parser_errors import UnknownLabelError
+from mpy_init.core.service import Service
+from mpy_init.utils.parser_errors import ParserSrvNameError, ParserSrvNameErrorList, ServiceNameError, LabelSrvNameError
+
+
+class UnitNameError(Exception):
+    """Raised when unit name validation fails"""
+    pass
 
 
 class SyntaxException(Exception):
@@ -30,6 +36,30 @@ class UnitPrototype:
     # MPY pre-defined unit name
     _mpy_package: str = None
 
+    def __init__(self, name):
+        Service.validateName(name)
+        self._name = name.lower()
+
+    @staticmethod
+    def _split_servicenames_to_list(self, value: str) -> list:
+        """Split string into list by space, comma and semicolon separators"""
+        value = value.replace(',', ' ').replace(';', ' ')
+        list = []
+        error_list: list[ServiceNameError] = []
+
+        for srv_name in value.split():
+            try: 
+                Service.validateName(srv_name)
+
+                list.append(srv_name.lower())
+            except ParserSrvNameError as srvname_err:
+                error_list.append(srvname_err)
+
+        if error_list:
+            raise ParserSrvNameErrorList(error_list)
+
+        return list
+
     def get_description(self):
         return self._description
     def set_description(self, value):
@@ -38,27 +68,31 @@ class UnitPrototype:
     def get_after(self):
         return self._after
     def set_after(self, value):
-        self._after = value
+        self._after = self._split_servicenames_to_list(value)
 
     def get_before(self):
         return self._before
     def set_before(self, value):
-        self._before = value
+        self._before = self._split_servicenames_to_list(value)
 
     def get_wants(self):
         return self._wants
     def set_wants(self, value):
-        self._wants = value
+        self._wants = self._split_servicenames_to_list(value)
 
     def get_requires(self):
         return self._requires
     def set_requires(self, value):
-        self._requires = value
+        self._requires = self._split_servicenames_to_list(value)
 
     def get_defines(self):
         return self._defines
-    def set_defines(self, value):
-        self._defines = value
+    def set_defines(self, srv_name):
+        try:
+            Service.validateName(srv_name)
+            self._defines = srv_name.lower()
+        except ServiceNameError as srvname_err:
+            raise LabelSrvNameError(srvname_err)
 
     after = property(get_after, set_after)
     before = property(get_before, set_before)

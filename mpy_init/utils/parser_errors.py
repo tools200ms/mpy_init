@@ -9,16 +9,41 @@ class ParserErrorList (Exception):
         self._file_path = file_path
 
 
+class ServiceNameError(ValueError):
+    def __init__(self, name: str):
+        self._name = name
 
-class ConfigParserError (Exception):
+class ServiceEmptyNameError(ServiceNameError):
+    def __str__(self):
+        return f"No service name provided"
+
+class ServiceInvalidNameError(ServiceNameError):
+    def __str__(self):
+        return f"Invalid service name: {self._name}\nService name must be alpha-numeric with '-' and '_' characters allowed and must start with a letter."
+
+class ServiceNameDoesNotStartWithLetterError(ServiceNameError):
+    def __str__(self):
+        return f"Illegal first character for value: '{self._label_name}'\nFirst character must be a letter."
+
+class ServiceNameTooLongError(ServiceNameError):
+    def __str__(self):
+        return f"Too long value for label: '{self._label_name}'"
+
+class ServiceNameReDefinitionError(ServiceNameError):
+    def __str__(self):
+        return f"Re-defined service name: {self._name}\nService names must be unique."
+
+
+# Value error while parsing the config file
+class ConfigParserError (ValueError):
     _line_no = -1
 
     def addLineNo(self, line_no: int):
         self._line_no = line_no
 
-class MisformattedLineError(ConfigParserError):
-    def __init__(self, line_no):
-        self._line_no = line_no
+#class MisformattedLineError(ConfigParserError):
+#    def __init__(self, line_no):
+#        self._line_no = line_no
 
 class LabelError(ConfigParserError):
 
@@ -45,9 +70,19 @@ class UnknownLabelError(LabelError):
     def __str__(self):
         return f"Unknown label '{self._label_name}'"
 
+class LabelValueError(LabelError):
+    def __init__(self):
+        super().__init__(None)
 
+    def addLabel(self, name:str):
+        self._label_name = name
 
-class ParserValueTooLongError(LabelError):
-    def __str__(self):
-        f"Too long value for label: '{self._label_name}'"
+class LabelSrvNameError(LabelValueError):
+    def __init__(self, srv_name_err: ServiceNameError):
+        self._srv_name_err = srv_name_err
+
+class LabelSrvNameErrorList(LabelSrvNameError):
+    def __init__(self, errors: list[ServiceNameError]):
+        self._errors = errors
+    # TODO add __str__ for printing cumulated messages
 

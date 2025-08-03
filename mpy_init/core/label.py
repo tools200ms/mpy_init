@@ -23,3 +23,5 @@ class Label:
 
         if len(value) > 32:
             raise LabelTooLongError(label)
+
+        return True

@@ -5,8 +5,21 @@ from abc import ABC, abstractmethod
     Defines unit file parameters: 
         'description'
 """
+
 class Unit(ABC):
     _description: str
+
+    # Start service after "__after" but does not imply a dependency.
+    __after: tuple() # Unit
+    # Start service before "__before".
+    __before: tuple() # Unit
+
+    # Weak dependency, if "__wants" service is missing, starts anyway.
+    __wants: tuple() # Unit
+    # Strong dependency, "__requires" is requied to start service.
+    __requires: tuple() # Unit
+
+    __provides: tuple() # Target
 
     def __init__(self, description: str = ""):
         self._description = description
@@ -15,13 +28,6 @@ class Unit(ABC):
     def run(self) -> None:
         """Execute unit action"""
         pass
-
-    @staticmethod
-    def validateName(str: str):
-        if not str or not str[0].isalpha():
-            return False
-        return str.isalnum()
-
 
 class ExecUnit(Unit):
    
