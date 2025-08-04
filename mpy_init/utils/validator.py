@@ -1,8 +1,8 @@
-from mpy_init.utils.parser_errors import ServiceEmptyNameError, ServiceNameDoesNotStartWithLetterError, \
-    ServiceInvalidNameError
+from mpy_init.utils.validator_errors import ValidatorsEmptyNameError, ValidatorsInvalidNameError, \
+    ValidatorsNameDoesNotStartWithLetterError
 
 
-class Service:
+class Validators:
     @staticmethod
     def validateName(name: str) -> True:
         """
@@ -21,12 +21,12 @@ class Service:
         """
         # ensure that the name is not an empty value
         if not name:
-            raise ServiceEmptyNameError()
+            raise ValidatorsEmptyNameError()
 
         if not all(c.isalnum() or c == '_' or c == '-' for c in name):
-            raise ServiceInvalidNameError(name)
+            raise ValidatorsInvalidNameError(name)
 
         if not name[0].isalpha():
-            raise ServiceNameDoesNotStartWithLetterError(name)
+            raise ValidatorsNameDoesNotStartWithLetterError(name)
 
         return True

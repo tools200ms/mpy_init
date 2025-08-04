@@ -1,52 +1,38 @@
+from mpy_init.utils.validator_errors import ValidatorsNameError
+
 
 class ParserErrorList (Exception):
     _file_path = None
 
-    def __init__(self, errors: list[Exception]):
+    def __init__(self, errors: list[Exception], file_path: str):
         self._errors = errors
-
-    def addFilePath(self, file_path: str):
         self._file_path = file_path
 
-
-class ServiceNameError(ValueError):
-    def __init__(self, name: str):
-        self._name = name
-
-class ServiceEmptyNameError(ServiceNameError):
-    def __init__(self):
-        super().__init__(None)
-
     def __str__(self):
-        return f"No service name provided"
-
-class ServiceInvalidNameError(ServiceNameError):
-    def __str__(self):
-        return f"Invalid service name: {self._name}\nService name must be alpha-numeric with '-' and '_' characters allowed and must start with a letter."
-
-class ServiceNameDoesNotStartWithLetterError(ServiceNameError):
-    def __str__(self):
-        return f"Illegal first character for value: '{self._label_name}'\nFirst character must be a letter."
-
-class ServiceNameTooLongError(ServiceNameError):
-    def __str__(self):
-        return f"Too long value for label: '{self._label_name}'"
-
-class ServiceNameReDefinitionError(ServiceNameError):
-    def __str__(self):
-        return f"Re-defined service name: {self._name}\nService names must be unique."
-
+        error_messages = []
+        for error in self._errors:
+            error_messages.append(str(error))
+        return f"Errors in file '{self._file_path}':\n" + "\n".join(error_messages)
 
 # Value error while parsing the config file
 class ConfigParserError (ValueError):
-    _line_no = -1
+    _line_no: int
+
+    def __init__(self, line_no: int = -1):
+        self._line_no = line_no
 
     def addLineNo(self, line_no: int):
         self._line_no = line_no
 
 class MisformattedLineError(ConfigParserError):
-    def __init__(self, line_no):
-        self._line_no = line_no
+    _line: str
+
+    def __init__(self, line_no, line:str):
+        super().__init__(line_no)
+        self._line = line
+    
+    def __str__(self):
+        return f"Misformatted line {self._line_no}: \n\t{self._line[0:12]}..."
 
 class LabelError(ConfigParserError):
 
@@ -67,7 +53,8 @@ class LabelDoesNotStartWithLetterError(LabelError):
 
 class LabelHasIllegalName(LabelError):
     def __str__(self):
-        f"Label '{self._label}' contains illegal characters - only alphanumeric characters and underscores are allowed"
+        return f"Label '{self._label_name}' contains illegal characters - only alphanumeric characters and underscores are allowed"
+
 
 class UnknownLabelError(LabelError):
     def __str__(self):
@@ -81,11 +68,11 @@ class LabelValueError(LabelError):
         self._label_name = name
 
 class LabelSrvNameError(LabelValueError):
-    def __init__(self, srv_name_err: ServiceNameError):
+    def __init__(self, srv_name_err: ValidatorsNameError):
         self._srv_name_err = srv_name_err
 
 class LabelSrvNameErrorList(LabelSrvNameError):
-    def __init__(self, errors: list[ServiceNameError]):
+    def __init__(self, errors: list[ValidatorsNameError]):
         self._errors = errors
     # TODO add __str__ for printing cumulated messages
 

@@ -4,8 +4,9 @@
 Unit prototype class providing base functionality for unit configuration and validation.
 """
 from mpy_init.core.label import Label
-from mpy_init.core.service import Service
-from mpy_init.utils.parser_errors import ServiceNameError, LabelSrvNameError, LabelSrvNameErrorList
+from mpy_init.utils.validator import Validators
+from mpy_init.utils.parser_errors import ValidatorsNameError, LabelSrvNameError, LabelSrvNameErrorList, \
+    UnknownLabelError
 
 
 class UnitNameError(Exception):
@@ -37,7 +38,7 @@ class UnitPrototype:
     _mpy_package: str = None
 
     def __init__(self, name):
-        Service.validateName(name)
+        Validators.validateName(name)
         self._name = name.lower()
 
     @staticmethod
@@ -45,14 +46,14 @@ class UnitPrototype:
         """Split string into list by space, comma and semicolon separators"""
         value = value.replace(',', ' ').replace(';', ' ')
         list = []
-        error_list: list[ServiceNameError] = []
+        error_list: list[ValidatorsNameError] = []
 
         for srv_name in value.split():
             try: 
-                Service.validateName(srv_name)
+                Validators.validateName(srv_name)
 
                 list.append(srv_name.lower())
-            except ServiceNameError as srvname_err:
+            except ValidatorsNameError as srvname_err:
                 error_list.append(srvname_err)
 
         if error_list:
@@ -89,9 +90,9 @@ class UnitPrototype:
         return self._defines
     def set_defines(self, srv_name):
         try:
-            Service.validateName(srv_name)
+            Validators.validateName(srv_name)
             self._defines = srv_name.lower()
-        except ServiceNameError as srvname_err:
+        except ValidatorsNameError as srvname_err:
             raise LabelSrvNameError(srvname_err)
 
     after = property(get_after, set_after)

@@ -1,7 +1,6 @@
 import os
 
-from mpy_init.core.label import Label
-from mpy_init.core.unit import Unit
+
 from mpy_init.core.unit_prototype import UnitPrototype
 from mpy_init.utils.parser_errors import ConfigParserError, LabelSrvNameError, ParserErrorList, MisformattedLineError
 
@@ -11,12 +10,14 @@ class Parser:
     MAX_LABEL_LEN = 32
     MAX_VALUE_LEN = 2048
 
+    _origin_file_path: str = None
     _config_txt: str
 
-    def __init__(self, config_txt: str, unit_name: str):
+    def __init__(self, config_txt: str, unit_name: str, origin_file_path: str = None):
         self._config_txt = config_txt
 
         self._unit_prototype = UnitPrototype(unit_name)
+        self._origin_file_path = origin_file_path
 
 
     @classmethod
@@ -46,11 +47,17 @@ class Parser:
         if not base_name.endswith('.unit'):
             raise ValueError(f"Invalid file extension - must be '.unit': {file_path}")
 
+        if not file_path.startswith("/"):
+            # make correction to get an absolute path
+            file_path = '/'.join((os.getcwd(), file_path))
+
         if os.path.getsize(file_path) > cls.MAX_FILE_SIZE:
             raise ValueError(f"File size exceeds the maximum limit of {cls.MAX_FILE_SIZE} bytes.")
 
         with open(file_path, 'r') as f:
-            return cls(f.read(), base_name.rsplit('.', 1)[0], file_path)
+            return cls( f.read(),
+                        base_name.rsplit('.', 1)[0],
+                        file_path )
 
         # End of function
 
@@ -86,7 +93,7 @@ class Parser:
                 label, value = label.rstrip(), value.lstrip()
 
                 self._unit_prototype.setLabel(label, value)
-
+                result[label] = value
             except (LabelSrvNameError, ConfigParserError) as parser_err:
                 # Errors encountered while parsing value:
                 # add line no. that has been not available in validator:
@@ -97,8 +104,8 @@ class Parser:
                 # add errors to the list and continue parsing so all syntax errors
                 # are cached
                 errors.append(parser_err)
-            except ValueError:
-                errors.append(MisformattedLineError(line_no))
+            except ValueError as v_err:
+                errors.append(MisformattedLineError(line_no, line))
 
             # if value == '':
             #     raise ValueError(ParserError.print_error(f"Invalid line: '{line}'", line_no, self._file_path))
@@ -108,9 +115,7 @@ class Parser:
             #         ParserError.print_error(f"Value for label '{label}' exceeds maximum length of 1024 characters",
             #                                 line_no, self._file_path))
 
-            if len(errors) > 0:
-                raise ParserErrorList(errors)
-
-            result[label] = value
+        if len(errors) > 0:
+            raise ParserErrorList(errors, self._origin_file_path)
 
         return result
