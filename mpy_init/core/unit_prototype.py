@@ -5,7 +5,7 @@ Unit prototype class providing base functionality for unit configuration and val
 """
 from mpy_init.core.label import Label
 from mpy_init.core.service import Service
-from mpy_init.utils.parser_errors import ParserSrvNameError, ParserSrvNameErrorList, ServiceNameError, LabelSrvNameError
+from mpy_init.utils.parser_errors import ServiceNameError, LabelSrvNameError, LabelSrvNameErrorList
 
 
 class UnitNameError(Exception):
@@ -52,11 +52,11 @@ class UnitPrototype:
                 Service.validateName(srv_name)
 
                 list.append(srv_name.lower())
-            except ParserSrvNameError as srvname_err:
+            except ServiceNameError as srvname_err:
                 error_list.append(srvname_err)
 
         if error_list:
-            raise ParserSrvNameErrorList(error_list)
+            raise LabelSrvNameErrorList(error_list)
 
         return list
 

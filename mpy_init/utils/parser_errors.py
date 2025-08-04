@@ -14,6 +14,9 @@ class ServiceNameError(ValueError):
         self._name = name
 
 class ServiceEmptyNameError(ServiceNameError):
+    def __init__(self):
+        super().__init__(None)
+
     def __str__(self):
         return f"No service name provided"
 
@@ -41,9 +44,9 @@ class ConfigParserError (ValueError):
     def addLineNo(self, line_no: int):
         self._line_no = line_no
 
-#class MisformattedLineError(ConfigParserError):
-#    def __init__(self, line_no):
-#        self._line_no = line_no
+class MisformattedLineError(ConfigParserError):
+    def __init__(self, line_no):
+        self._line_no = line_no
 
 class LabelError(ConfigParserError):
 

@@ -3,7 +3,7 @@ import os
 from mpy_init.core.label import Label
 from mpy_init.core.unit import Unit
 from mpy_init.core.unit_prototype import UnitPrototype
-from mpy_init.utils.parser_errors import ConfigParserError, ParserSrvNameError, ParserErrorList
+from mpy_init.utils.parser_errors import ConfigParserError, LabelSrvNameError, ParserErrorList, MisformattedLineError
 
 
 class Parser:
@@ -87,16 +87,18 @@ class Parser:
 
                 self._unit_prototype.setLabel(label, value)
 
-            except (ParserSrvNameError, ConfigParserError) as parser_err:
+            except (LabelSrvNameError, ConfigParserError) as parser_err:
                 # Errors encountered while parsing value:
                 # add line no. that has been not available in validator:
                 parser_err.addLineNo(line_no)
                 # Add a label name that has been not available in validator:
-                if isinstance(parser_err, ParserSrvNameError):
+                if isinstance(parser_err, LabelSrvNameError):
                     parser_err.addLabel(label)
                 # add errors to the list and continue parsing so all syntax errors
                 # are cached
                 errors.append(parser_err)
+            except ValueError:
+                errors.append(MisformattedLineError(line_no))
 
             # if value == '':
             #     raise ValueError(ParserError.print_error(f"Invalid line: '{line}'", line_no, self._file_path))
