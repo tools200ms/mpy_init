@@ -1,4 +1,4 @@
-[Service]
+
 description = BusyBox SyslogD
 
 requires = clock,hostname,localmount

@@ -7,8 +7,8 @@ from mpy_init.utils.parser_errors import ParserErrorList
 class TestConfigParser(unittest.TestCase):
     def test_valid_simple_input(self):
         input_text = "wants = value"
-        expected = {"wants": "value"}
-        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)
+        expected = {"wants": "value", "name": "test"}
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse().to_dict(), expected)
 
     def test_multiple_valid_lines(self):
         input_text = """
@@ -17,9 +17,10 @@ class TestConfigParser(unittest.TestCase):
         """
         expected = {
             "after": "value1",
-            "before": "value2"
+            "before": "value2",
+            "name": "test"
         }
-        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse().to_dict(), expected)
 
     def test_accept_non_letter_start(self):
         input_text = """
@@ -34,9 +35,10 @@ class TestConfigParser(unittest.TestCase):
             "before": "value4",
             "requires": "value3",
             "wants": "value5",
-            "defines": "value6"
+            "defines": "value6",
+            "name": "test"
         }
-        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse().to_dict(), expected)
 
     def test_ignore_labels_prefixed_with_equal_char(self):
         input_text = """
@@ -45,32 +47,33 @@ class TestConfigParser(unittest.TestCase):
         #==-label_3 = value3
         """
         expected = {
-            "description": "value1"
+            "description": "value1",
+            "name": "test"
         }
-        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse().to_dict(), expected)
 
     def test_preserve_value_spaces(self):
         input_text = "wants = value with spaces"
-        expected = {"wants": "value with spaces"}
-        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)
+        expected = {"wants": "value with spaces", "name": "test"}
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse().to_dict(), expected)
 
     def test_trim_spaces(self):
         input_text = "requires = value with spaces   "
-        expected = {"requires": "value with spaces"}
-        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)
+        expected = {"requires": "value with spaces", "name": "test"}
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse().to_dict(), expected)
 
         input_text = "   requires = value with spaces   "
-        expected = {"requires": "value with spaces"}
-        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)
+        expected = {"requires": "value with spaces", "name": "test"}
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse().to_dict(), expected)
 
     def test_empty_input(self):
-        self.assertEqual(Parser.loadConfigTxt("", 'test').parse(), {})
-        self.assertEqual(Parser.loadConfigTxt("\n\n\n", 'test').parse(), {})
+        self.assertEqual(Parser.loadConfigTxt("", 'test').parse().to_dict(), {"name": "test"})
+        self.assertEqual(Parser.loadConfigTxt("\n\n\n", 'test').parse().to_dict(), {"name": "test"})
 
     def test_value_with_equals(self):
         input_text = "description = value = with = equals"
-        expected = {"description": "value = with = equals"}
-        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)
+        expected = {"description": "value = with = equals", "name": "test"}
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse().to_dict(), expected)
 
     def test_invalid_line_raises_valueerror(self):
         invalid_inputs = [
@@ -105,9 +108,10 @@ class TestConfigParser(unittest.TestCase):
         expected = {
             "after": "value1",
             "before": "value2",
-            "wants": "value3"
+            "wants": "value3",
+            "name": "test"
         }
-        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse().to_dict(), expected)
 
 
     def test_only_comments_and_empty_lines(self):
@@ -120,7 +124,7 @@ class TestConfigParser(unittest.TestCase):
 
         """
 
-        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), {})
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse().to_dict(), {"name": "test"})
 
 
     def test_mixed_content_with_comments(self):
@@ -140,6 +144,7 @@ class TestConfigParser(unittest.TestCase):
         expected = {
             "before": "value1",
             "after": "value2",
-            "wants": "value3"
+            "wants": "value3",
+            "name": "test"
         }
-        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse(), expected)
+        self.assertEqual(Parser.loadConfigTxt(input_text, 'test').parse().to_dict(), expected)

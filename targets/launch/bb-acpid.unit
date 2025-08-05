@@ -1,4 +1,4 @@
-[Service]
+
 # Not necessary for AMR boards
 description = BusyBox Acpid
 

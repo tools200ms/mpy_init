@@ -1,11 +1,38 @@
 from mpy_init.utils.validator_errors import ValidatorsNameError
 
+class ErrorList:
+    def __init__(self, errors: [Exception] = []):
+        self._errors = errors
 
-class ParserErrorList (Exception):
+    def __len__(self):
+        return len(self._errors)
+
+    def __iter__(self):
+        return iter(self._errors)
+
+    def append(self, error: Exception):
+        self._errors.append(error)
+    
+    def cntErrors(self):
+        total = 0
+        for error in self._errors:
+            if isinstance(error, ErrorList):
+                total += error.cntErrors()
+            else:
+                total += 1
+        return total
+
+    
+    def hasErrors(self):
+        return len(self._errors) > 0
+
+
+# Error list for unit errors
+class ParserErrorList (Exception, ErrorList):
     _file_path = None
 
-    def __init__(self, errors: list[Exception], file_path: str):
-        self._errors = errors
+    def __init__(self, errors: [Exception], file_path: str):
+        ErrorList.__init__(self, errors)
         self._file_path = file_path
 
     def __str__(self):
@@ -13,6 +40,7 @@ class ParserErrorList (Exception):
         for error in self._errors:
             error_messages.append(str(error))
         return f"Errors in file '{self._file_path}':\n" + "\n".join(error_messages)
+
 
 # Value error while parsing the config file
 class ConfigParserError (ValueError):
@@ -71,8 +99,8 @@ class LabelSrvNameError(LabelValueError):
     def __init__(self, srv_name_err: ValidatorsNameError):
         self._srv_name_err = srv_name_err
 
-class LabelSrvNameErrorList(LabelSrvNameError):
-    def __init__(self, errors: list[ValidatorsNameError]):
-        self._errors = errors
+class LabelSrvNameErrorList(LabelSrvNameError, ErrorList):
+    def __init__(self, errors: [ValidatorsNameError]):
+        ErrorList.__init__(self, errors)
     # TODO add __str__ for printing cumulated messages
 

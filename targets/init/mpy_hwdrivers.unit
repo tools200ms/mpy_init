@@ -1,4 +1,4 @@
-[Service]
+
 description = Autodetection of hardware disabled from boot cmdline
 
 # Service order and dependency control:

@@ -74,8 +74,8 @@ class Parser:
         Raises:
             ValueError: If a non-ignored line doesn't contain exactly one '=' character
         """
-        errors = []
-        result: dict = {}
+        errors = ParserErrorList([], self._origin_file_path)
+        #result: dict = {}
 
         for line_no, line in enumerate(self._config_txt.splitlines(), 1):
         
@@ -93,7 +93,7 @@ class Parser:
                 label, value = label.rstrip(), value.lstrip()
 
                 self._unit_prototype.setLabel(label, value)
-                result[label] = value
+                #result[label] = value
             except (LabelSrvNameError, ConfigParserError) as parser_err:
                 # Errors encountered while parsing value:
                 # add line no. that has been not available in validator:
@@ -115,7 +115,7 @@ class Parser:
             #         ParserError.print_error(f"Value for label '{label}' exceeds maximum length of 1024 characters",
             #                                 line_no, self._file_path))
 
-        if len(errors) > 0:
-            raise ParserErrorList(errors, self._origin_file_path)
+        if errors.hasErrors():
+            raise errors
 
-        return result
+        return self._unit_prototype

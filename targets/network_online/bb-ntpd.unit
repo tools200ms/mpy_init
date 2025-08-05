@@ -1,4 +1,4 @@
-[Service]
+
 description = BusyBox NTP daemon
 
 requires = network

@@ -1,4 +1,4 @@
-[Service]
+
 description = Applies a keymap for the consoles.
 
 # Service order and dependency control:

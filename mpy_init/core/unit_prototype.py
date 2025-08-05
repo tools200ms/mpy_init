@@ -61,6 +61,9 @@ class UnitPrototype:
 
         return list
 
+    def get_unitname(self):
+        return self._name
+    
     def get_description(self):
         return self._description
     def set_description(self, value):
@@ -95,6 +98,9 @@ class UnitPrototype:
         except ValidatorsNameError as srvname_err:
             raise LabelSrvNameError(srvname_err)
 
+    unitname = property(get_unitname)
+    description = property(get_description, set_description)
+    
     after = property(get_after, set_after)
     before = property(get_before, set_before)
     wants = property(get_wants, set_wants)
@@ -142,8 +148,19 @@ class UnitPrototype:
 
         setattr(self, f"_{label_name}", value)
 
-    def update(self):
-        # check if ExecUnit or MPY pre-defined unit is declared
+    def to_dict(self) -> dict:
+        """Return dictionary containing all set properties"""
+        properties = {}
+
+        for attr_name, attr_value in vars(self).items():
+            if attr_name.startswith('_') and attr_value is not None:
+                properties[attr_name[1:]] = attr_value
+
+        return properties
+
+
+def update(self):
+    # check if ExecUnit or MPY pre-defined unit is declared
         # if self._mpy_package is None and self._exec_start is None:
         #     if not ( and self._exec_stop is None and
         #             self._exec_reload is None and self._pid_file is None):

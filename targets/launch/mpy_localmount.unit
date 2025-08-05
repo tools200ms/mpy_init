@@ -1,4 +1,4 @@
-[Service]
+
 description = Mounts disks and swap according to /etc/fstab.
 
 # Service order and dependency control:

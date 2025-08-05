@@ -1,4 +1,4 @@
-[Service]
+
 description = Load modules.
 
 # Service order and dependency control:

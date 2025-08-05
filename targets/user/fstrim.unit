@@ -1,4 +1,4 @@
-[Service]
+
 description = Ensure NAND storage is discarted
 
 # Service defined targets:
