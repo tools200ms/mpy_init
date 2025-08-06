@@ -4,7 +4,7 @@ import logging
 
 from mpy_init.utils.parser import Parser
 from mpy_init.core.unit import Unit, MPUnit
-from mpy_init.utils.parser_errors import ParserErrorList, ErrorList
+from mpy_init.utils.parser_error_list import ConfigErrorList, UnitErrorList
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -26,7 +26,7 @@ def main() -> int:
     #     print("Usage: mpy_init <directory>", file=sys.stderr)
     #     return 1
 
-    unit_error_list = ErrorList()
+    error_list = ConfigErrorList()
     ret_code = 0x0
     directory = 'targets'
 
@@ -63,9 +63,12 @@ def main() -> int:
                 #             print(f"Invalid configuration key in {file_path}: {str(e)}", file=sys.stderr)
                 #             return 1
                 #         raise
-            except ParserErrorList as unit_err:
-                unit_error_list.append(unit_err)
+            except UnitErrorList as err_list:
+                error_list.append(err_list)
                 ret_code |= 0x1
+            except ValueError as err:
+                error_list.append(err)
+                ret_code |= 0x2
 
     # except FileNotFoundError as e:
     #     print(f"Config file not found: {e}", file=sys.stderr)
@@ -73,10 +76,8 @@ def main() -> int:
     # except Exception as e:
     #     print(f"Unexpected error: {e}", file=sys.stderr)
     #     return 1
-    if unit_error_list.hasErrors():
-        print(f"Found {unit_error_list.cntErrors()} error(s) in {len(unit_error_list)} unit file(s): ", file=sys.stderr)
-        for unit_err_list in unit_error_list:
-            logger.error(f"{unit_err_list}")
+    if error_list.hasErrors():
+        print(error_list)
 
     return ret_code
 

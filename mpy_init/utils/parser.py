@@ -2,7 +2,8 @@ import os
 
 
 from mpy_init.core.unit_prototype import UnitPrototype
-from mpy_init.utils.parser_errors import ConfigParserError, LabelSrvNameError, ParserErrorList, MisformattedLineError
+from mpy_init.utils.parser_error_list import UnitErrorList
+from mpy_init.utils.parser_errors import MisformattedLineError, LabelValueError, ConfigError
 
 
 class Parser:
@@ -74,7 +75,7 @@ class Parser:
         Raises:
             ValueError: If a non-ignored line doesn't contain exactly one '=' character
         """
-        errors = ParserErrorList([], self._origin_file_path)
+        error_list = UnitErrorList(self._origin_file_path)
         #result: dict = {}
 
         for line_no, line in enumerate(self._config_txt.splitlines(), 1):
@@ -93,19 +94,19 @@ class Parser:
                 label, value = label.rstrip(), value.lstrip()
 
                 self._unit_prototype.setLabel(label, value)
-                #result[label] = value
-            except (LabelSrvNameError, ConfigParserError) as parser_err:
+
+            except (LabelValueError, ConfigError) as parser_err:
                 # Errors encountered while parsing value:
                 # add line no. that has been not available in validator:
                 parser_err.addLineNo(line_no)
                 # Add a label name that has been not available in validator:
-                if isinstance(parser_err, LabelSrvNameError):
+                if isinstance(parser_err, LabelValueError):
                     parser_err.addLabel(label)
                 # add errors to the list and continue parsing so all syntax errors
                 # are cached
-                errors.append(parser_err)
+                error_list.append(parser_err)
             except ValueError as v_err:
-                errors.append(MisformattedLineError(line_no, line))
+                error_list.append(MisformattedLineError(line_no, line))
 
             # if value == '':
             #     raise ValueError(ParserError.print_error(f"Invalid line: '{line}'", line_no, self._file_path))
@@ -115,7 +116,7 @@ class Parser:
             #         ParserError.print_error(f"Value for label '{label}' exceeds maximum length of 1024 characters",
             #                                 line_no, self._file_path))
 
-        if errors.hasErrors():
-            raise errors
+        if error_list.hasErrors():
+            raise error_list
 
         return self._unit_prototype

@@ -4,9 +4,10 @@
 Unit prototype class providing base functionality for unit configuration and validation.
 """
 from mpy_init.core.label import Label
+from mpy_init.utils.parser_error_list import LabelValueErrorList
 from mpy_init.utils.validator import Validators
-from mpy_init.utils.parser_errors import ValidatorsNameError, LabelSrvNameError, LabelSrvNameErrorList, \
-    UnknownLabelError
+from mpy_init.utils.parser_errors import UnknownLabelError, LabelValueError
+from mpy_init.utils.validator_errors import ValidationError
 
 
 class UnitNameError(Exception):
@@ -46,18 +47,18 @@ class UnitPrototype:
         """Split string into list by space, comma and semicolon separators"""
         value = value.replace(',', ' ').replace(';', ' ')
         list = []
-        error_list: list[ValidatorsNameError] = []
+        error_list = LabelValueErrorList()
 
         for srv_name in value.split():
             try: 
                 Validators.validateName(srv_name)
 
                 list.append(srv_name.lower())
-            except ValidatorsNameError as srvname_err:
+            except ValidationError as srvname_err:
                 error_list.append(srvname_err)
 
-        if error_list:
-            raise LabelSrvNameErrorList(error_list)
+        if error_list.hasErrors():
+            raise error_list
 
         return list
 
@@ -95,8 +96,8 @@ class UnitPrototype:
         try:
             Validators.validateName(srv_name)
             self._defines = srv_name.lower()
-        except ValidatorsNameError as srvname_err:
-            raise LabelSrvNameError(srvname_err)
+        except ValidationError as v_err:
+            raise LabelValueError(v_err)
 
     unitname = property(get_unitname)
     description = property(get_description, set_description)
@@ -143,7 +144,7 @@ class UnitPrototype:
         # Can throwException LabelError
         Label.pre_check(label_name, value)
 
-        if not hasattr(self, f"_{label_name}"):
+        if not hasattr(self, '_' + label_name):
             raise UnknownLabelError(label_name)
 
         setattr(self, f"_{label_name}", value)
