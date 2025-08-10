@@ -3,11 +3,13 @@
 """
 Unit prototype class providing base functionality for unit configuration and validation.
 """
-from mpy_init.core.label import Label
+from mpy_init.core.param import Param
+from mpy_init.core.unit import ExecUnit
 from mpy_init.utils.parser_error_list import LabelValueErrorList
 from mpy_init.utils.validator import Validators
-from mpy_init.utils.parser_errors import UnknownLabelError, LabelValueError
+from mpy_init.utils.parser_errors import UnknownLabelError, LabelValueError, MissConfigurationError
 from mpy_init.utils.validator_errors import ValidationError
+import mpy_init.core.units
 
 
 class UnitNameError(Exception):
@@ -23,10 +25,11 @@ class UnitPrototype:
     # Unit description:
     _description: str = "",
     # Unit node properties:
-    _after: str = None
-    _before: str = None
-    _wants: str = None
-    _requires: str = None
+    _after: list = None
+    _before: list = None
+    _wants: list = None
+    _requires: list = None
+    _provides: list = None
     _defines: str = None
 
     # Unit exec parameters:
@@ -71,24 +74,39 @@ class UnitPrototype:
         self._description = value
 
     def get_after(self):
-        return self._after
+        if self._after is None:
+            return None
+        return ' '.join(self._after)
     def set_after(self, value):
         self._after = self._split_servicenames_to_list(value)
 
     def get_before(self):
-        return self._before
+        if self._before is None:
+            return None
+        return ' '.join(self._before)
     def set_before(self, value):
         self._before = self._split_servicenames_to_list(value)
 
     def get_wants(self):
-        return self._wants
+        if self._wants is None:
+            return None
+        return ' '.join(self._wants)
     def set_wants(self, value):
         self._wants = self._split_servicenames_to_list(value)
 
     def get_requires(self):
-        return self._requires
+        if self._requires is None:
+            return None
+        return ' '.join(self._requires)
     def set_requires(self, value):
         self._requires = self._split_servicenames_to_list(value)
+
+    def get_provides(self):
+        if self._provides is None:
+            return None
+        return ' '.join(self._provides)
+    def set_provides(self, value):
+        self._provides = self._split_servicenames_to_list(value)
 
     def get_defines(self):
         return self._defines
@@ -142,7 +160,7 @@ class UnitPrototype:
 
     def setLabel(self, label_name:str, value:str):
         # Can throwException LabelError
-        Label.pre_check(label_name, value)
+        Param.pre_check(label_name, value)
 
         if not hasattr(self, '_' + label_name):
             raise UnknownLabelError(label_name)
@@ -160,11 +178,23 @@ class UnitPrototype:
         return properties
 
 
-def update(self):
+    def update(self):
     # check if ExecUnit or MPY pre-defined unit is declared
-        # if self._mpy_package is None and self._exec_start is None:
-        #     if not ( and self._exec_stop is None and
-        #             self._exec_reload is None and self._pid_file is None):
-        #         raise SyntaxException("Predefined-unit declared conflicts with 'exec unit' definitions")
-        pass
-            #self._unit_type =
+        if self._mpy_package is None and self._exec_start is None:
+            raise MissConfigurationError("Missing 'mpy_package' or 'exec_start' definitions.")
+
+        if self._mpy_package is not None and self._exec_start is not None:
+            raise MissConfigurationError("Conflicting 'mpy_package' and 'exec_start' definitions.")
+
+        if self._mpy_package is not None and (self._exec_stop is not None or self._exec_reload is not None or self._pid_file is not None):
+            raise MissConfigurationError("Conflicting 'mpy_package' and exec unit (exec_*, pid_file) definitions.")
+
+        if self._mpy_package is None:
+            return ExecUnit(self._exec_start, self._exec_stop, self._exec_reload, self._pid_file)
+
+        try:
+            cls = getattr(mpy_init.core.units, self._mpy_package)
+            return cls()
+        except AttributeError:
+            raise MissConfigurationError(f"Package '{self._mpy_package}' not found in predefined units")
+

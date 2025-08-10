@@ -6,7 +6,7 @@ before = checkfs fsck
 requires = sysfs dev-mount
 
 # Service defined target:
-provides_mdev = dev
+provides = dev
 defines = init
 
 # process control

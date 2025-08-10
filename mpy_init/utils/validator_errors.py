@@ -18,11 +18,11 @@ class ValidatorsInvalidNameError(ValidationError):
 
 class ValidatorsNameDoesNotStartWithLetterError(ValidationError):
     def __str__(self):
-        return f"Illegal first character: '{self._label_name}'\nFirst character for service name must be a letter."
+        return f"Illegal first character: '{self._name}'\nFirst character for service name must be a letter."
 
 class ValidatorsNameTooLongError(ValidationError):
     def __str__(self):
-        return f"Too long name: '{self._label_name}'"
+        return f"Too long name: '{self._name}'"
 
 class ValidatorsNameReDefinitionError(ValidationError):
     def __str__(self):

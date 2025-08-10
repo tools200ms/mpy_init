@@ -3,7 +3,6 @@ from abc import ABC, abstractmethod
 
 from mpy_init.utils.parser_errors import LabelValueError
 
-
 class ErrorList:
     def __init__(self):
         self._error_list = []
@@ -35,7 +34,7 @@ class ConfigErrorList(Exception, ErrorList):
         ErrorList.__init__(self)
 
     def __str__(self):
-        msg = f"Found {self.cntErrors()} error(s) in {len(self)} unit file(s): \n"
+        msg = f"Found {self.cntErrors()} error(s): \n"
         for err in self._error_list:
             msg += f"{err}"
 

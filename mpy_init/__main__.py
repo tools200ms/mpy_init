@@ -2,6 +2,7 @@ import os
 import sys
 import logging
 
+from mpy_init.core.logic.graph_builder import GraphBuilder, GraphBuilderUnitRedefinitionError
 from mpy_init.utils.parser import Parser
 from mpy_init.core.unit import Unit, MPUnit
 from mpy_init.utils.parser_error_list import ConfigErrorList, UnitErrorList
@@ -27,12 +28,15 @@ def main() -> int:
     #     return 1
 
     error_list = ConfigErrorList()
+    gb = GraphBuilder()
     ret_code = 0x0
     directory = 'targets'
+    term_errors = (UnitErrorList, GraphBuilderUnitRedefinitionError)
 
     # dirname, dir. list, file list
     for base_dir, _, file_list in os.walk(directory):
         for file_name in file_list:
+            parser = None
             if not file_name.endswith('.unit'):
                 # print warning
                 continue
@@ -40,9 +44,13 @@ def main() -> int:
             try:
                 file_path = os.path.join(base_dir, file_name)
 
-                unit_prototype = Parser.loadFile(file_path).parse()
+                parser = Parser.loadFile(file_path)
+                unit_prototype = parser.parse()
+
+                gb.add(unit_prototype)
+
                 # logger.info(f"Loaded unit: {unit_prototype.unitname} ✅")
-                print(f"Loaded unit: {unit_prototype.unitname} ✅")
+                print(f"{unit_prototype.unitname:<15} loaded ✅")
 
                 # if 'mpy_package' in unit_conf:
                 #     buildin_unit_name = unit_conf['mpy_package']
@@ -63,12 +71,10 @@ def main() -> int:
                 #             print(f"Invalid configuration key in {file_path}: {str(e)}", file=sys.stderr)
                 #             return 1
                 #         raise
-            except UnitErrorList as err_list:
-                error_list.append(err_list)
-                ret_code |= 0x1
-            except ValueError as err:
+            except term_errors as err:
+                print(f"{parser.unitname:<15} failed ❌")
                 error_list.append(err)
-                ret_code |= 0x2
+                ret_code |= 2**(term_errors.index(type(err)))
 
     # except FileNotFoundError as e:
     #     print(f"Config file not found: {e}", file=sys.stderr)

@@ -4,7 +4,7 @@ description = BusyBox SyslogD
 requires = clock,hostname,localmount
 
 # Service defined targets:
-provides = logger
+provide = logger
 
 # process control
 exec_start = /bin/busybox syslogd

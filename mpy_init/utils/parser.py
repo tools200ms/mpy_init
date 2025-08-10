@@ -3,13 +3,13 @@ import os
 
 from mpy_init.core.unit_prototype import UnitPrototype
 from mpy_init.utils.parser_error_list import UnitErrorList
-from mpy_init.utils.parser_errors import MisformattedLineError, LabelValueError, ConfigError
+from mpy_init.utils.parser_errors import MisformattedLineError, LabelValueError, ConfigError, MissConfigurationError
+from mpy_init.utils.py_compatibility import const
+from mpy_init.utils.validator_errors import ValidationError
 
 
 class Parser:
-    MAX_FILE_SIZE = 1024 * 1024  # 1 MB
-    MAX_LABEL_LEN = 32
-    MAX_VALUE_LEN = 2048
+    MAX_FILE_SIZE = const(1024 * 1024)  # 1 MB
 
     _origin_file_path: str = None
     _config_txt: str
@@ -20,6 +20,10 @@ class Parser:
         self._unit_prototype = UnitPrototype(unit_name)
         self._origin_file_path = origin_file_path
 
+    def get_unitname(self):
+        return self._unit_prototype.unitname
+
+    unitname = property(get_unitname)
 
     @classmethod
     def loadConfigTxt(cls, config_txt: str, unit_name: str) -> 'Parser':
@@ -115,6 +119,11 @@ class Parser:
             #     raise ValueError(
             #         ParserError.print_error(f"Value for label '{label}' exceeds maximum length of 1024 characters",
             #                                 line_no, self._file_path))
+
+        try:
+            unit = self._unit_prototype.update()
+        except MissConfigurationError as err:
+            error_list.append(err)
 
         if error_list.hasErrors():
             raise error_list
