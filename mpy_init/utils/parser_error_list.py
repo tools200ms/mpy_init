@@ -34,11 +34,9 @@ class ConfigErrorList(Exception, ErrorList):
         ErrorList.__init__(self)
 
     def __str__(self):
-        msg = f"Found {self.cntErrors()} error(s): \n"
-        for err in self._error_list:
-            msg += f"{err}"
-
-        return msg
+        return f"""
+Found {self.cntErrors()} error(s): 
+{''.join(map(str, self._error_list))}"""
 
 # List of errors found in unit configuration (file)
 class UnitErrorList(Exception, ErrorList):
@@ -48,10 +46,12 @@ class UnitErrorList(Exception, ErrorList):
         self._file_path = file_path
 
     def __str__(self):
-        error_messages = []
-        for error in self._error_list:
-            error_messages.append(str(error))
-        return f"File '{self._file_path}':\n" + "\n".join(error_messages) + "\n"
+
+        # for error in self._error_list:
+        #     error_messages.append(str(error))
+        return f"""File '{self._file_path}': 
+{''.join(map(str, self._error_list))}
+"""
 
 # Errors found for a single label
 class LabelValueErrorList(LabelValueError, ErrorList):

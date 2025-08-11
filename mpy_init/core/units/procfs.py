@@ -8,3 +8,12 @@ class procfs(MPUnit):
 
     def __init__(self):
         super().__init__()
+
+    def start(self) -> None:
+        pass
+
+    def stop(self) -> None:
+        pass
+
+    def reload(self):
+        pass

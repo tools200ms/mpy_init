@@ -2,9 +2,13 @@
 description = Service description
 
 # Service order and dependency control:
+# Ordering control
 after = service1,targetX
+# Ordering control
 before = serviceN, targetZ
+# weak dependency
 wants = service
+# strong dependency
 requires = service
 
 # Service defined targets:

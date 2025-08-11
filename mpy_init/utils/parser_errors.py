@@ -9,17 +9,17 @@ class ConfigError (ValueError):
         super().__init__(msg)
         self._line_no = -1
 
-    def __init__(self, line_no: int = -1):
-        self._line_no = line_no
+    # def __init__(self, line_no: int = -1):
+    #     self._line_no = line_no
 
     def addLineNo(self, line_no: int):
         self._line_no = line_no
 
     def __str__(self):
-        if self._line_no is None:
-            return "    "
+        if self._line_no == -1:
+            return f"   {super().__str__()}"
 
-        return f"    at line: '{self._line_no}, "
+        return f"""    at line: {self._line_no}, """
 
 class MissConfigurationError(ConfigError):
     def __init__(self, msg: str):
@@ -87,7 +87,7 @@ class LabelHasIllegalName(LabelError):
 
 class UnknownLabelError(LabelError):
     def __str__(self):
-        return f"{super().__str__()} Unknown label '{self._label_name}'"
+        return f"{super().__str__()}Unknown label '{self._label_name}'"
 
 
 class LabelValueError(LabelError):

@@ -3,13 +3,13 @@
 """
 Unit prototype class providing base functionality for unit configuration and validation.
 """
+from mpy_init.core.node_prototype import NodeSet
 from mpy_init.core.param import Param
-from mpy_init.core.unit import ExecUnit
+from mpy_init.core.unit import ExecUnit, MPUnit
 from mpy_init.utils.parser_error_list import LabelValueErrorList
 from mpy_init.utils.validator import Validators
 from mpy_init.utils.parser_errors import UnknownLabelError, LabelValueError, MissConfigurationError
 from mpy_init.utils.validator_errors import ValidationError
-import mpy_init.core.units
 
 
 class UnitNameError(Exception):
@@ -33,10 +33,10 @@ class UnitPrototype:
     _defines: str = None
 
     # Unit exec parameters:
-    _exec_start: str = None,
-    _exec_stop: str = None,
-    _exec_reload: str = None,
-    _pid_file: str = None,
+    _exec_start: str = None
+    _exec_stop: str = None
+    _exec_reload: str = None
+    _pid_file: str = None
 
     # MPY pre-defined unit name
     _mpy_package: str = None
@@ -44,6 +44,9 @@ class UnitPrototype:
     def __init__(self, name):
         Validators.validateName(name)
         self._name = name.lower()
+
+    def registerNodeSet(self, node_set: NodeSet):
+        self._node_set = node_set
 
     @staticmethod
     def _split_servicenames_to_list(self, value: str) -> list:
@@ -179,7 +182,10 @@ class UnitPrototype:
 
 
     def update(self):
-    # check if ExecUnit or MPY pre-defined unit is declared
+        unit = None
+        node = None
+
+        # check if ExecUnit or MPY pre-defined unit is declared
         if self._mpy_package is None and self._exec_start is None:
             raise MissConfigurationError("Missing 'mpy_package' or 'exec_start' definitions.")
 
@@ -189,12 +195,9 @@ class UnitPrototype:
         if self._mpy_package is not None and (self._exec_stop is not None or self._exec_reload is not None or self._pid_file is not None):
             raise MissConfigurationError("Conflicting 'mpy_package' and exec unit (exec_*, pid_file) definitions.")
 
-        if self._mpy_package is None:
-            return ExecUnit(self._exec_start, self._exec_stop, self._exec_reload, self._pid_file)
+        if self._exec_start:
+            unit = ExecUnit(self._exec_start, self._exec_stop, self._exec_reload, self._pid_file)
+        else: # elif self._mpy_package:
+            unit = MPUnit.load(self._mpy_package)
 
-        try:
-            cls = getattr(mpy_init.core.units, self._mpy_package)
-            return cls()
-        except AttributeError:
-            raise MissConfigurationError(f"Package '{self._mpy_package}' not found in predefined units")
-
+        return unit

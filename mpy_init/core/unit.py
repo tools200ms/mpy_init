@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-
+from mpy_init.utils.parser_errors import MissConfigurationError
 
 """
     Defines unit file parameters: 
@@ -51,15 +51,13 @@ class ExecUnit(Unit):
         pass
 
 
-class MPUnit(Unit):
+class MPUnit(Unit, ABC):
     @staticmethod
-    def find(name, value):
+    def load(name, values = ()):
         try:
             import mpy_init.core.units
-            return getattr(mpy_init.core.units, name)
+            cls = getattr(mpy_init.core.units, name)
+
+            return cls(*values)
         except AttributeError:
-            return None
-
-    def run(self) -> None:
-        pass
-
+            raise MissConfigurationError(f"Package '{name}' not found in predefined units")

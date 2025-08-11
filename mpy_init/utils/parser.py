@@ -1,6 +1,6 @@
 import os
 
-
+from mpy_init.core.node_prototype import NodeSet
 from mpy_init.core.unit_prototype import UnitPrototype
 from mpy_init.utils.parser_error_list import UnitErrorList
 from mpy_init.utils.parser_errors import MisformattedLineError, LabelValueError, ConfigError, MissConfigurationError
@@ -67,7 +67,7 @@ class Parser:
         # End of function
 
     
-    def parse(self, execept=None) -> dict:
+    def parse(self, node_set: NodeSet) -> dict:
         """
         Parse configuration text in 'label = value' format.
         Only lines where label starts with a letter are processed.
@@ -81,6 +81,7 @@ class Parser:
         """
         error_list = UnitErrorList(self._origin_file_path)
         #result: dict = {}
+
 
         for line_no, line in enumerate(self._config_txt.splitlines(), 1):
         
