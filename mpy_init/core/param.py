@@ -25,7 +25,7 @@ class Param:
         if not label[0].isalpha():
             raise LabelDoesNotStartWithLetterError(label)
 
-        if not all(c.isalnum() or c == '_' for c in label):
+        if not all(c.isalpha() or c.isdigit() or c == '_' for c in label):
             raise LabelHasIllegalName(label)
 
         # prevalidate value

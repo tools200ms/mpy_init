@@ -23,7 +23,7 @@ class Validators:
         if not name:
             raise ValidatorsEmptyNameError()
 
-        if not all(c.isalnum() or c == '_' or c == '-' for c in name):
+        if not all(c.isalpha() or c.isdigit() or c == '_' or c == '-' for c in name):
             raise ValidatorsInvalidNameError(name)
 
         if not name[0].isalpha():

@@ -1,5 +1,4 @@
-from abc import ABC
-
+from mpy_init import ABC
 
 class ValidationError(ValueError, ABC):
     def __init__(self, name: str):

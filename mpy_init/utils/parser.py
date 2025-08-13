@@ -5,7 +5,6 @@ from mpy_init.core.unit_prototype import UnitPrototype
 from mpy_init.utils.parser_error_list import UnitErrorList
 from mpy_init.utils.parser_errors import MisformattedLineError, LabelValueError, ConfigError, MissConfigurationError
 from mpy_init.utils.py_compatibility import const
-from mpy_init.utils.validator_errors import ValidationError
 
 
 class Parser:
@@ -56,7 +55,7 @@ class Parser:
             # make correction to get an absolute path
             file_path = '/'.join((os.getcwd(), file_path))
 
-        if os.path.getsize(file_path) > cls.MAX_FILE_SIZE:
+        if os.stat(file_path)[6] > cls.MAX_FILE_SIZE:
             raise ValueError(f"File size exceeds the maximum limit of {cls.MAX_FILE_SIZE} bytes.")
 
         with open(file_path, 'r') as f:

@@ -1,7 +1,7 @@
 import os
 import sys
-import logging
-import traceback
+#import logging
+#import traceback
 
 from mpy_init.core.logic.graph_builder import GraphBuilder, GraphBuilderUnitRedefinitionError
 from mpy_init.core.node_prototype import NodeSet
@@ -9,8 +9,8 @@ from mpy_init.utils.parser import Parser
 from mpy_init.core.unit import Unit, MPUnit
 from mpy_init.utils.parser_error_list import ConfigErrorList, UnitErrorList
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+#logging.basicConfig(level=logging.INFO)
+#logger = logging.getLogger(__name__)
 
 
 def main() -> int:
@@ -32,22 +32,21 @@ def main() -> int:
     error_list = ConfigErrorList()
     gb = GraphBuilder()
     ret_code = 0x0
-    directory = 'targets'
+    base_dir = 'targets'
     term_errors = (UnitErrorList, GraphBuilderUnitRedefinitionError)
     node_set = NodeSet()
 
-    # dirname, dir. list, file list
-    for base_dir, _, file_list in os.walk(directory):
-        for file_name in file_list:
+    for target in ('init', 'launch', 'network', 'network_online', 'user'):
+    #for base_dir, _, file_list in os.walk(directory):
+        target_dir = base_dir + '/' + target
+        for file_name in os.listdir(target_dir):
 
             if not file_name.endswith('.unit'):
                 # print warning
                 continue
 
             try:
-                file_path = os.path.join(base_dir, file_name)
-
-                parser = Parser.loadFile(file_path)
+                parser = Parser.loadFile(target_dir + '/' + file_name)
                 unit_prototype = parser.parse(node_set)
 
                 gb.add(unit_prototype)
@@ -79,8 +78,9 @@ def main() -> int:
                 error_list.append(err)
                 ret_code |= 2**(term_errors.index(type(err)))
             except Exception as e:
-                print(f"{parser.unitname} internal failure❗")
-                traceback.print_exc()
+                print(f"{file_name} internal failure❗")
+                sys.print_exception(e)
+                #traceback.print_exc()
                 return 0xFF
             finally:
                 parser = None

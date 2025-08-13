@@ -1,5 +1,3 @@
-import sys
-from abc import ABC, abstractmethod
 
 from mpy_init.utils.parser_errors import LabelValueError
 
