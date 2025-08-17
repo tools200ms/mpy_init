@@ -28,13 +28,16 @@ class ErrorList:
 
 
 class ConfigErrorList(Exception, ErrorList):
+
     def __init__(self):
         ErrorList.__init__(self)
 
     def __str__(self):
         return f"""
 Found {self.cntErrors()} error(s): 
-{''.join(map(str, self._error_list))}"""
+{
+    ''.join(map(str, self._error_list)
+)}"""
 
 # List of errors found in unit configuration (file)
 class UnitErrorList(Exception, ErrorList):
@@ -53,5 +56,8 @@ class UnitErrorList(Exception, ErrorList):
 
 # Errors found for a single label
 class LabelValueErrorList(LabelValueError, ErrorList):
-    pass
+
+    def __init__(self):
+        ErrorList.__init__(self)
+
     # TODO add __str__ for printing cumulated messages

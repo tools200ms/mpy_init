@@ -21,4 +21,7 @@ exec_stop = <executable_path>
 exec_reload = <executable_path>
 pid_file = PID file path
 
+# obsolete, remove below label
+# MPY init unit files mustt start with:
+# 'mpy_' prefix followed by mpy unit name.
 mpy_package = mpy_package_name

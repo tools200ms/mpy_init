@@ -12,17 +12,26 @@ class Parser:
 
     _origin_file_path: str = None
     _config_txt: str
+    _node_set: NodeSet = None
+
+    @staticmethod
+    def register(node_set: NodeSet):
+        if Parser._node_set is not None:
+            raise RuntimeError("NodeSet has already been registered")
+        Parser._node_set = node_set
 
     def __init__(self, config_txt: str, unit_name: str, origin_file_path: str = None):
+        if self._node_set is None:
+            raise RuntimeError("NodeSet is not registered")
         self._config_txt = config_txt
 
-        self._unit_prototype = UnitPrototype(unit_name)
+        self._unit_proto = UnitPrototype(unit_name, self._node_set)
         self._origin_file_path = origin_file_path
+        
 
-    def get_unitname(self):
-        return self._unit_prototype.unitname
+    def get_unitproto(self):
+        return self._unit_proto
 
-    unitname = property(get_unitname)
 
     @classmethod
     def loadConfigTxt(cls, config_txt: str, unit_name: str) -> 'Parser':
@@ -66,7 +75,7 @@ class Parser:
         # End of function
 
     
-    def parse(self, node_set: NodeSet) -> dict:
+    def parse(self) -> dict:
         """
         Parse configuration text in 'label = value' format.
         Only lines where label starts with a letter are processed.
@@ -78,10 +87,11 @@ class Parser:
         Raises:
             ValueError: If a non-ignored line doesn't contain exactly one '=' character
         """
+        if self._node_set is None:
+            raise RuntimeError("NodeSet is not registered")
         error_list = UnitErrorList(self._origin_file_path)
-        #result: dict = {}
 
-
+        
         for line_no, line in enumerate(self._config_txt.splitlines(), 1):
         
             # Skip empty lines
@@ -97,7 +107,7 @@ class Parser:
                 label, value = line.split('=', 1)
                 label, value = label.rstrip(), value.lstrip()
 
-                self._unit_prototype.setLabel(label, value)
+                self._unit_proto.setLabel(label, value)
 
             except (LabelValueError, ConfigError) as parser_err:
                 # Errors encountered while parsing value:
@@ -121,11 +131,11 @@ class Parser:
             #                                 line_no, self._file_path))
 
         try:
-            unit = self._unit_prototype.update()
+            unit = self._unit_proto.update()
         except MissConfigurationError as err:
             error_list.append(err)
 
         if error_list.hasErrors():
             raise error_list
 
-        return self._unit_prototype
+        return self._unit_proto

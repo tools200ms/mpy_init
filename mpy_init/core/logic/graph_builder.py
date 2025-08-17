@@ -1,20 +1,30 @@
+from mpy_init.core.node_prototype import NodePrototype
 from mpy_init.core.unit import Unit
 
 
 class GraphBuilder:
     def __init__(self):
         self._units = {}
+        self._all_units = set()
+        self._target_name = None
 
     def set_target(self, target_name: str):
-        self.__target_name = target_name
+        self._target_name = target_name
 
-    def add(self, up: Unit):
-        if up.unitname in self._units:
-            raise GraphBuilderUnitRedefinitionError(up.unitname)
+    def add(self, u: Unit, nodep: NodePrototype):
+        uname = u.name
+        if uname in self._all_units:
+            raise GraphBuilderUnitRedefinitionError(uname)
 
-        self._units[up.unitname] = up
+        self._all_units.add(uname)
+
+        if self._target_name is None:
+            raise RuntimeError("Target name must be set before adding units")
 
 
+        self._units[uname] = u
+    
+    
     def compile(self):
         nodes = []
         for unit_name, unit in self._units.items():

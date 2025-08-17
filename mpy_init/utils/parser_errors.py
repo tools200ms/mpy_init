@@ -87,7 +87,7 @@ class LabelHasIllegalName(LabelError):
 
 class UnknownLabelError(LabelError):
     def __str__(self):
-        return f"{super().__str__()}Unknown label '{self._label_name}'"
+        return f"{super().__str__()}Unknown label '{self._label_name}'\n"
 
 
 class LabelValueError(LabelError):

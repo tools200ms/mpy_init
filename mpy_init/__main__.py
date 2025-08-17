@@ -34,7 +34,8 @@ def main() -> int:
     ret_code = 0x0
     base_dir = 'targets'
     term_errors = (UnitErrorList, GraphBuilderUnitRedefinitionError)
-    node_set = NodeSet()
+
+    Parser.register(NodeSet())
 
     for target in ('init', 'launch', 'network', 'network_online', 'user'):
         gb.set_target(target)
@@ -48,13 +49,11 @@ def main() -> int:
 
             try:
                 parser = Parser.loadFile(target_dir + '/' + file_name)
-                unit_prototype = parser.parse(node_set)
-                unit_prototype.update()
-
-                gb.add(unit_prototype)
+                unit_prototype = parser.parse()
+                gb.add(*unit_prototype.update())
 
                 # logger.info(f"Loaded unit: {unit_prototype.unitname} ✅")
-                print(f"{parser.unitname:<15} loaded ✅")
+                print(f"{parser.get_unitproto().unitname:<15} loaded ✅")
 
                 # if 'mpy_package' in unit_conf:
                 #     buildin_unit_name = unit_conf['mpy_package']
@@ -76,7 +75,7 @@ def main() -> int:
                 #             return 1
                 #         raise
             except term_errors as err:
-                print(f"{parser.unitname:<15} failed ❌")
+                print(f"{parser.get_unitproto().unitname:<15} failed ❌")
                 error_list.append(err)
                 ret_code |= 2**(term_errors.index(type(err)))
             except Exception as e:

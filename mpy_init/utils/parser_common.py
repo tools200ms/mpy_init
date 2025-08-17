@@ -1,11 +1,11 @@
 from mpy_init.utils.parser_error_list import LabelValueErrorList
 from mpy_init.utils.validator import Validators
-from mpy_init.utils.validator_errors import ValidationError
+from mpy_init.utils.validator_errors import ValidationError, ValidatorsNameReDefinitionError
 
 
 class ParserCommon:
     @staticmethod
-    def split_servicenames_to_list(self, value: str) -> list:
+    def split_servicenames_to_list(value: str) -> list:
         """Split string into list by space, comma and semicolon separators"""
         value = value.replace(',', ' ').replace(';', ' ')
         list = []
@@ -14,8 +14,15 @@ class ParserCommon:
         for srv_name in value.split():
             try:
                 Validators.validateName(srv_name)
+                # label name to lowercase:
+                srv_name = srv_name.lower()
+
+                # Skip duplicate service names
+                if srv_name in list:
+                    raise ValidatorsNameReDefinitionError(srv_name)
 
                 list.append(srv_name.lower())
+
             except ValidationError as srvname_err:
                 error_list.append(srvname_err)
 

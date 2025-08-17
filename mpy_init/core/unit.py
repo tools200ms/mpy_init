@@ -8,8 +8,23 @@ from mpy_init.utils.parser_errors import MissConfigurationError
 
 class Unit(ABC):
 
-    def __init__(self, description: str = None):
+    def __init__(self, name: str, description: str = None):
+        self._name = name
         self._description = description if description is not None else ""
+
+    def get_name(self):
+        return self._name
+    def set_name(self, name: str):
+        self._name = name
+
+    def get_description(self):
+        return self._description
+    def set_description(self, description: str):
+        self._description = description
+
+    name = property(get_name, set_name)
+    description = property(get_description, set_description)
+
 
     @abstractmethod
     def start(self) -> None:
@@ -24,6 +39,8 @@ class Unit(ABC):
     @abstractmethod
     def reload(self):
         pass
+    
+    
 
 class ExecUnit(Unit):
    
@@ -35,9 +52,10 @@ class ExecUnit(Unit):
     def __init__(self, exec_start: str, exec_stop: str,
                  exec_reload: str,
                  pid_file: str, 
+                 name: str, 
                  description: str = None):
 
-        super().__init__(description)
+        super().__init__(name, description)
         self._exec_start = exec_start
         self._exec_stop = exec_stop
         self._exec_reload = exec_reload
@@ -54,6 +72,10 @@ class ExecUnit(Unit):
 
 
 class MPUnit(Unit, ABC):
+    
+    def __init__(self, description: str = None):
+        super().__init__(type(self).__name__, description)
+    
     @staticmethod
     def load(name, description, values = ()):
         try:

@@ -3,13 +3,11 @@
 """
 Unit prototype class providing base functionality for unit configuration and validation.
 """
-from mpy_init.core.node_prototype import NodeSet
+from mpy_init.core.node_prototype import NodeSet, NodePrototype
 from mpy_init.core.param import Param
 from mpy_init.core.unit import ExecUnit, MPUnit
-from mpy_init.utils.parser_common import ParserCommon
 from mpy_init.utils.validator import Validators
 from mpy_init.utils.parser_errors import UnknownLabelError, LabelValueError, MissConfigurationError
-from mpy_init.utils.validator_errors import ValidationError
 
 
 class UnitNameError(Exception):
@@ -22,15 +20,9 @@ class SyntaxException(Exception):
     pass
 
 class UnitPrototype:
+    _name: str = None
     # Unit description:
-    _description: str = "",
-    # Unit node properties:
-    _after: list = None
-    _before: list = None
-    _wants: list = None
-    _requires: list = None
-    _provides: list = None
-    _defines: str = None
+    _description: str = None
 
     # Unit exec parameters:
     _exec_start: str = None
@@ -41,12 +33,14 @@ class UnitPrototype:
     # MPY pre-defined unit name
     _mpy_package: str = None
 
-    def __init__(self, name):
+    def __init__(self, name, node_set: NodeSet):
         Validators.validateName(name)
         self._name = name.lower()
 
-    def registerNodeSet(self, node_set: NodeSet):
-        self._node_set = node_set
+        self._node_proto = NodePrototype(node_set)
+
+    def get_node_proto(self):
+        return self._node_proto
 
     def get_unitname(self):
         return self._name
@@ -56,58 +50,11 @@ class UnitPrototype:
     def set_description(self, value):
         self._description = value
 
-    def get_after(self):
-        if self._after is None:
-            return None
-        return ' '.join(self._after)
-    def set_after(self, value):
-        self._after = ParserCommon.split_servicenames_to_list(value)
-
-    def get_before(self):
-        if self._before is None:
-            return None
-        return ' '.join(self._before)
-    def set_before(self, value):
-        self._before = ParserCommon.split_servicenames_to_list(value)
-
-    def get_wants(self):
-        if self._wants is None:
-            return None
-        return ' '.join(self._wants)
-    def set_wants(self, value):
-        self._wants = ParserCommon.split_servicenames_to_list(value)
-
-    def get_requires(self):
-        if self._requires is None:
-            return None
-        return ' '.join(self._requires)
-    def set_requires(self, value):
-        self._requires = ParserCommon.split_servicenames_to_list(value)
-
-    def get_provides(self):
-        if self._provides is None:
-            return None
-        return ' '.join(self._provides)
-    def set_provides(self, value):
-        self._provides = ParserCommon.split_servicenames_to_list(value)
-
-    def get_defines(self):
-        return self._defines
-    def set_defines(self, srv_name):
-        try:
-            Validators.validateName(srv_name)
-            self._defines = srv_name.lower()
-        except ValidationError as v_err:
-            raise LabelValueError(v_err)
-
+    
     unitname = property(get_unitname)
     description = property(get_description, set_description)
-    
-    after = property(get_after, set_after)
-    before = property(get_before, set_before)
-    wants = property(get_wants, set_wants)
-    requires = property(get_requires, set_requires)
-    defines = property(get_defines, set_defines)
+    node_proto = property(get_node_proto)
+
 
     def get_exec_start(self):
         return self._exec_start
@@ -134,6 +81,13 @@ class UnitPrototype:
     exec_reload = property(get_exec_reload, set_exec_reload)
     pid_file = property(get_pid_file, set_pid_file)
 
+    set_after = lambda self, value: self.node_proto.set_after(value)
+    set_before = lambda self, value: self.node_proto.set_before(value)
+    set_wants = lambda self, value: self.node_proto.set_wants(value)
+    set_requires = lambda self, value: self.node_proto.set_requires(value)
+    set_provides = lambda self, value: self.node_proto.set_provides(value)
+    set_defines = lambda self, value: self.node_proto.set_defines(value)
+
     def get_mpy_package(self):
         return self._mpy_package
     def set_mpy_package(self, value):
@@ -144,11 +98,13 @@ class UnitPrototype:
     def setLabel(self, label_name:str, value:str):
         # Can throwException LabelError
         Param.pre_check(label_name, value)
+        set_fun = 'set_' + label_name
 
-        if not hasattr(self, '_' + label_name):
+        if not hasattr(self, set_fun):
             raise UnknownLabelError(label_name)
 
-        setattr(self, f"_{label_name}", value)
+        getattr(self, set_fun)(value)
+        #setattr(self, label_name, value)
 
     def to_dict(self) -> dict:
         """Return dictionary containing all set properties"""
@@ -174,8 +130,9 @@ class UnitPrototype:
             raise MissConfigurationError("Conflicting 'mpy_package' and exec unit (exec_*, pid_file) definitions.")
 
         if self._exec_start:
-            unit = ExecUnit(self._exec_start, self._exec_stop, self._exec_reload, self._pid_file, self._description)
+            unit = ExecUnit(self._exec_start, self._exec_stop, self._exec_reload, self._pid_file,
+                            self._name, self._description)
         else: # elif self._mpy_package:
             unit = MPUnit.load(self._mpy_package, self.description)
 
-        return unit
+        return unit, self._node_proto
