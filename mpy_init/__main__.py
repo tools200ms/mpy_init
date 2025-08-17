@@ -37,7 +37,8 @@ def main() -> int:
     node_set = NodeSet()
 
     for target in ('init', 'launch', 'network', 'network_online', 'user'):
-    #for base_dir, _, file_list in os.walk(directory):
+        gb.set_target(target)
+
         target_dir = base_dir + '/' + target
         for file_name in os.listdir(target_dir):
 
@@ -48,6 +49,7 @@ def main() -> int:
             try:
                 parser = Parser.loadFile(target_dir + '/' + file_name)
                 unit_prototype = parser.parse(node_set)
+                unit_prototype.update()
 
                 gb.add(unit_prototype)
 

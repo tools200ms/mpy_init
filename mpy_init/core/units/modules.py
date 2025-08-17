@@ -9,8 +9,8 @@ class modules(MPUnit):
     not loaded by initramfs.
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, description: str):
+        super().__init__(description)
 
     def start(self) -> None:
         pass

@@ -8,8 +8,8 @@ from mpy_init.utils.parser_errors import MissConfigurationError
 
 class Unit(ABC):
 
-    def __init__(self, description: str = ""):
-        self._description = description
+    def __init__(self, description: str = None):
+        self._description = description if description is not None else ""
 
     @abstractmethod
     def start(self) -> None:
@@ -34,8 +34,10 @@ class ExecUnit(Unit):
 
     def __init__(self, exec_start: str, exec_stop: str,
                  exec_reload: str,
-                 pid_file: str):
+                 pid_file: str, 
+                 description: str = None):
 
+        super().__init__(description)
         self._exec_start = exec_start
         self._exec_stop = exec_stop
         self._exec_reload = exec_reload
@@ -53,11 +55,11 @@ class ExecUnit(Unit):
 
 class MPUnit(Unit, ABC):
     @staticmethod
-    def load(name, values = ()):
+    def load(name, description, values = ()):
         try:
             import mpy_init.core.units
             cls = getattr(mpy_init.core.units, name)
 
-            return cls(*values)
+            return cls(description, *values)
         except AttributeError:
             raise MissConfigurationError(f"Package '{name}' not found in predefined units")

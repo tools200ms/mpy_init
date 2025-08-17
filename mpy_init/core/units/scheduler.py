@@ -7,8 +7,8 @@ class scheduler(MPUnit):
     Handles initialization and configuration of system scheduler.
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, description: str):
+        super().__init__(description)
 
     def start(self) -> None:
         pass

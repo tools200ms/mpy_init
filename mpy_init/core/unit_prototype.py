@@ -6,7 +6,7 @@ Unit prototype class providing base functionality for unit configuration and val
 from mpy_init.core.node_prototype import NodeSet
 from mpy_init.core.param import Param
 from mpy_init.core.unit import ExecUnit, MPUnit
-from mpy_init.utils.parser_error_list import LabelValueErrorList
+from mpy_init.utils.parser_common import ParserCommon
 from mpy_init.utils.validator import Validators
 from mpy_init.utils.parser_errors import UnknownLabelError, LabelValueError, MissConfigurationError
 from mpy_init.utils.validator_errors import ValidationError
@@ -48,26 +48,6 @@ class UnitPrototype:
     def registerNodeSet(self, node_set: NodeSet):
         self._node_set = node_set
 
-    @staticmethod
-    def _split_servicenames_to_list(self, value: str) -> list:
-        """Split string into list by space, comma and semicolon separators"""
-        value = value.replace(',', ' ').replace(';', ' ')
-        list = []
-        error_list = LabelValueErrorList()
-
-        for srv_name in value.split():
-            try: 
-                Validators.validateName(srv_name)
-
-                list.append(srv_name.lower())
-            except ValidationError as srvname_err:
-                error_list.append(srvname_err)
-
-        if error_list.hasErrors():
-            raise error_list
-
-        return list
-
     def get_unitname(self):
         return self._name
     
@@ -81,35 +61,35 @@ class UnitPrototype:
             return None
         return ' '.join(self._after)
     def set_after(self, value):
-        self._after = self._split_servicenames_to_list(value)
+        self._after = ParserCommon.split_servicenames_to_list(value)
 
     def get_before(self):
         if self._before is None:
             return None
         return ' '.join(self._before)
     def set_before(self, value):
-        self._before = self._split_servicenames_to_list(value)
+        self._before = ParserCommon.split_servicenames_to_list(value)
 
     def get_wants(self):
         if self._wants is None:
             return None
         return ' '.join(self._wants)
     def set_wants(self, value):
-        self._wants = self._split_servicenames_to_list(value)
+        self._wants = ParserCommon.split_servicenames_to_list(value)
 
     def get_requires(self):
         if self._requires is None:
             return None
         return ' '.join(self._requires)
     def set_requires(self, value):
-        self._requires = self._split_servicenames_to_list(value)
+        self._requires = ParserCommon.split_servicenames_to_list(value)
 
     def get_provides(self):
         if self._provides is None:
             return None
         return ' '.join(self._provides)
     def set_provides(self, value):
-        self._provides = self._split_servicenames_to_list(value)
+        self._provides = ParserCommon.split_servicenames_to_list(value)
 
     def get_defines(self):
         return self._defines
@@ -182,8 +162,6 @@ class UnitPrototype:
 
 
     def update(self):
-        unit = None
-        node = None
 
         # check if ExecUnit or MPY pre-defined unit is declared
         if self._mpy_package is None and self._exec_start is None:
@@ -196,8 +174,8 @@ class UnitPrototype:
             raise MissConfigurationError("Conflicting 'mpy_package' and exec unit (exec_*, pid_file) definitions.")
 
         if self._exec_start:
-            unit = ExecUnit(self._exec_start, self._exec_stop, self._exec_reload, self._pid_file)
+            unit = ExecUnit(self._exec_start, self._exec_stop, self._exec_reload, self._pid_file, self._description)
         else: # elif self._mpy_package:
-            unit = MPUnit.load(self._mpy_package)
+            unit = MPUnit.load(self._mpy_package, self.description)
 
         return unit

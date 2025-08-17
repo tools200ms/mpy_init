@@ -2,7 +2,7 @@ import os
 
 from mpy_init.core.node_prototype import NodeSet
 from mpy_init.core.unit_prototype import UnitPrototype
-from mpy_init.utils.parser_error_list import UnitErrorList
+from mpy_init.utils.parser_error_list import UnitErrorList, LabelValueErrorList
 from mpy_init.utils.parser_errors import MisformattedLineError, LabelValueError, ConfigError, MissConfigurationError
 from mpy_init.utils.py_compatibility import const
 

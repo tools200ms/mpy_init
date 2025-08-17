@@ -11,8 +11,6 @@ class NodeSet:
         pass
 
 class NodePrototype:
-    # Unit description:
-    _description: str = "",
     # Unit node properties:
     _after: list = None
     _before: list = None
@@ -32,11 +30,6 @@ class NodePrototype:
 
         self._deps.append(ndeps)
 
-
-    def get_description(self):
-        return self._description
-    def set_description(self, value):
-        self._description = value
 
     def get_after(self):
         return self._after
@@ -68,7 +61,6 @@ class NodePrototype:
     def set_defines(self, name):
         self._defines = name
 
-    description = property(get_description, set_description)
     after = property(get_after, set_after)
     before = property(get_before, set_before)
     wants = property(get_wants, set_wants)

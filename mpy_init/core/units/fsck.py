@@ -8,8 +8,8 @@ class fsck(MPUnit):
     Runs after device filesystem is mounted and before additional services start.
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, description: str):
+        super().__init__(description)
 
     def start(self) -> None:
         pass

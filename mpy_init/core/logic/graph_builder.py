@@ -1,11 +1,14 @@
-from mpy_init.core.unit_prototype import UnitPrototype
+from mpy_init.core.unit import Unit
 
 
 class GraphBuilder:
     def __init__(self):
         self._units = {}
 
-    def add(self, up: UnitPrototype):
+    def set_target(self, target_name: str):
+        self.__target_name = target_name
+
+    def add(self, up: Unit):
         if up.unitname in self._units:
             raise GraphBuilderUnitRedefinitionError(up.unitname)
 
