@@ -1,43 +1,30 @@
+from mpy_init.core.logic.Node import Node
 from mpy_init.core.node_prototype import NodePrototype
 from mpy_init.core.unit import Unit
 
 
 class GraphBuilder:
     def __init__(self):
-        self._units = {}
-        self._all_units = set()
-        self._target_name = None
+        self._order = []
+
 
     def set_target(self, target_name: str):
         self._target_name = target_name
 
     def add(self, u: Unit, nodep: NodePrototype):
-        uname = u.name
-        if uname in self._all_units:
-            raise GraphBuilderUnitRedefinitionError(uname)
-
-        self._all_units.add(uname)
 
         if self._target_name is None:
             raise RuntimeError("Target name must be set before adding units")
 
+        self._order.append(Node(nodep, u))
+        self._order.sort()
+    
+    def scratch(self):
+        scratched = []
+        for node in self._order:
+            scratched.append(node.unit)
 
-        self._units[uname] = u
-    
-    
-    def compile(self):
-        nodes = []
-        for unit_name, unit in self._units.items():
-            node = Node(
-                name=unit_name,
-                after=unit.after,
-                requires=unit.requires,
-                wants=unit.wants,
-                provides=unit.provides,
-                defines=unit.defines
-            )
-            nodes.append(node)
-        return nodes
+        return tuple(scratched)
 
 
 class GraphBuilderError(Exception):

@@ -55,54 +55,53 @@ class NodePrototype:
         self._node_set = node_set
 
     def get_after(self):
-        if self._after is None:
-            return None
-        return ' '.join(self._after)
+        return self._after
 
     def set_after(self, value):
         self._after = \
             self._node_set.add_list(ParserCommon.split_servicenames_to_list(value))
 
     def get_before(self):
-        if self._before is None:
-            return None
-        return ' '.join(self._before)
+        return self._before
 
     def set_before(self, value):
         self._before = \
             self._node_set.add_list(ParserCommon.split_servicenames_to_list(value))
 
     def get_wants(self):
-        if self._wants is None:
-            return None
-        return ' '.join(self._wants)
+        return self._wants
 
     def set_wants(self, value):
-        self._wants = ParserCommon.split_servicenames_to_list(value)
+        self._wants = \
+            self._node_set.add_list(ParserCommon.split_servicenames_to_list(value))
 
     def get_requires(self):
-        if self._requires is None:
-            return None
-        return ' '.join(self._requires)
+        return self._requires
 
     def set_requires(self, value):
-        self._requires = ParserCommon.split_servicenames_to_list(value)
+        self._requires = \
+            self._node_set.add_list(ParserCommon.split_servicenames_to_list(value))
 
     def get_provides(self):
-        if self._provides is None:
-            return None
-        return ' '.join(self._provides)
+        return self._provides
 
     def set_provides(self, value):
-        self._provides = ParserCommon.split_servicenames_to_list(value)
+        self._provides = \
+            self._node_set.add_list(ParserCommon.split_servicenames_to_list(value))
 
     def get_defines(self):
         return self._defines
 
     def set_defines(self, srv_name):
         try:
-            Validators.validateName(srv_name)
-            self._defines = srv_name.lower()
+            self._defines = ParserCommon.normalize_servicename(srv_name)
+
         except ValidationError as v_err:
             raise LabelValueError(v_err)
 
+    after = property(get_after, set_after)
+    before = property(get_before, set_before)
+    wants = property(get_wants, set_wants)
+    requires = property(get_requires, set_requires)
+    provides = property(get_provides, set_provides)
+    defines = property(get_defines, set_defines)

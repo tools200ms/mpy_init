@@ -1,30 +1,75 @@
 
+from mpy_init.core.node_prototype import NodePrototype
+from mpy_init.core.unit import Unit
+
 
 class Node:
 
-    _description: str
+    def __init__(self, node_proto: NodePrototype, unit:Unit):
+        back_refs = []
+        next_refs = []
 
-    # Start service after "__after" but does not imply a dependency.
-    __after = None  # Unit
-    # Start service before "__before".
-    __before = None  # Unit
+        if node_proto.after is not None:
+            back_refs.extend(node_proto.after)
 
-    # Weak dependency, if "__wants" service is missing, starts anyway.
-    __wants = None # Unit
-    # Strong dependency, "__requires" is requied to start service.
-    __requires = None  # Unit
+        if node_proto.before is not None:
+            next_refs.extend(node_proto.before)
 
-    __provides = None  # Target
-    __defines = None
+        if node_proto.wants is not None:
+            back_refs.extend(node_proto.wants)
 
+        if node_proto.requires is not None:
+            back_refs.extend(node_proto.requires)
 
-    def __init__(self, name: str, after: list[str], requires: list[str],
-                 wants: list[str], provides: str, defines: str):
-        self.name = name
+        #self.provides: list = None
+        #self.defines: str = None
 
-        self.after = after
-        self.requires = requires
-        self.wants = wants
-        self.provides = provides
-        self.defines = defines
+        self.__unit = unit
+        self.__back_refs = set(tuple(back_refs))
+        self.__next_refs = set(tuple(next_refs))
+
+    @property
+    def unit(self):
+        return self.__unit
+
+    @property
+    def back_refs(self):
+        return self.__back_refs
+
+    @property
+    def next_refs(self):
+        return self.__next_refs
+
+    # def __eq__(self, other):
+    # compare with Python references
+
+    def __lt__(self, other):
+        if not isinstance(other, Node):
+            return NotImplemented
+
+        other_has_after = self.next_refs.intersection(other.back_refs)
+        other_has_before = self.back_refs.intersection(other.next_refs)
+
+        o_after_cnt = len(other_has_after)
+        o_before_cnt = len(other_has_before)
+
+        if o_after_cnt != 0 and o_before_cnt != 0:
+            raise SyntaxError('f"Direct circular dependency detected"')
+
+        return o_after_cnt == 0
+
+    def __gt__(self, other):
+        if not isinstance(other, Node):
+            return NotImplemented
+
+        other_has_before = self.back_refs.intersection(other.next_refs)
+        other_has_after = self.next_refs.intersection(other.back_refs)
+
+        o_before_cnt = len(other_has_before)
+        o_after_cnt = len(other_has_after)
+
+        if o_before_cnt != 0 and o_after_cnt != 0:
+            raise SyntaxError('f"Direct circular dependency detected"')
+
+        return o_before_cnt == 0
 

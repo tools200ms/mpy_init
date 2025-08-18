@@ -136,3 +136,6 @@ class UnitPrototype:
             unit = MPUnit.load(self._mpy_package, self.description)
 
         return unit, self._node_proto
+
+    def isConflicting(self):
+        self._node_proto

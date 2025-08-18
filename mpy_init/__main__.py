@@ -86,8 +86,17 @@ def main() -> int:
             finally:
                 parser = None
 
+    graph = gb.scratch()
 
-# except FileNotFoundError as e:
+    # Iterate through all units in dependency order
+    try:
+        for unit in graph:
+            print(f"Processing unit: {unit.name}")
+    except Exception as e:
+        print(f"Error processing units: {e}")
+        return 0xFF
+
+    # except FileNotFoundError as e:
     #     print(f"Config file not found: {e}", file=sys.stderr)
     #     return 1
     # except Exception as e:

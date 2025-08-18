@@ -5,6 +5,12 @@ from mpy_init.utils.validator_errors import ValidationError, ValidatorsNameReDef
 
 class ParserCommon:
     @staticmethod
+    def normalize_servicename(srv_name:str):
+        Validators.validateName(srv_name)
+        # label name to lowercase:
+        return srv_name.lower()
+
+    @staticmethod
     def split_servicenames_to_list(value: str) -> list:
         """Split string into list by space, comma and semicolon separators"""
         value = value.replace(',', ' ').replace(';', ' ')
@@ -13,9 +19,7 @@ class ParserCommon:
 
         for srv_name in value.split():
             try:
-                Validators.validateName(srv_name)
-                # label name to lowercase:
-                srv_name = srv_name.lower()
+                srv_name = ParserCommon.normalize_servicename(srv_name)
 
                 # Skip duplicate service names
                 if srv_name in list:
