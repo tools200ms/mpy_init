@@ -116,6 +116,15 @@ class UnitPrototype:
 
         return properties
 
+    @staticmethod
+    def loadMPUnit(name, description, values=()):
+        try:
+            import mpy_init.core.units
+            cls = getattr(mpy_init.core.units, name)
+
+            return cls(description, *values)
+        except AttributeError:
+            raise MissConfigurationError(f"Package '{name}' not found in predefined units")
 
     def update(self):
 
@@ -133,7 +142,7 @@ class UnitPrototype:
             unit = ExecUnit(self._exec_start, self._exec_stop, self._exec_reload, self._pid_file,
                             self._name, self._description)
         else: # elif self._mpy_package:
-            unit = MPUnit.load(self._mpy_package, self.description)
+            unit = UnitPrototype.loadMPUnit(self._mpy_package, self.description)
 
         return unit, self._node_proto
 

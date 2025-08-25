@@ -47,8 +47,8 @@ class Node:
         if not isinstance(other, Node):
             return NotImplemented
 
-        other_has_after = self.next_refs.intersection(other.back_refs)
-        other_has_before = self.back_refs.intersection(other.next_refs)
+        other_has_after = self.__next_refs.intersection(other.__back_refs)
+        other_has_before = self.__back_refs.intersection(other.__next_refs)
 
         o_after_cnt = len(other_has_after)
         o_before_cnt = len(other_has_before)
@@ -62,8 +62,8 @@ class Node:
         if not isinstance(other, Node):
             return NotImplemented
 
-        other_has_before = self.back_refs.intersection(other.next_refs)
-        other_has_after = self.next_refs.intersection(other.back_refs)
+        other_has_before = self.__back_refs.intersection(other.__next_refs)
+        other_has_after = self.__next_refs.intersection(other.__back_refs)
 
         o_before_cnt = len(other_has_before)
         o_after_cnt = len(other_has_after)

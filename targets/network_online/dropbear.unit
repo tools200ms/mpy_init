@@ -10,6 +10,6 @@ requires = net
 provides = sshd
 
 # process control
-exec_start = /usr/sbin/dropbear
+exec_start = /usr/sbin/dropbear -a -p 22
 pid_file = /var/run/dropbear.pid
 

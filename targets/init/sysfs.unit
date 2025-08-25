@@ -1,5 +1,5 @@
 
-description = Initialise /sys fielsystem
+description = Initialise /sys filesystem
 
 # process control
 mpy_package = sysfs

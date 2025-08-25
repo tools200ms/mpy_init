@@ -10,6 +10,6 @@ provides = dev
 defines = init
 
 # process control
-exec_start = /bin/mdevd -O4
+exec_start = /usr/bin/mdevd -O4
 pid_file = /run/mdevd.pid
 

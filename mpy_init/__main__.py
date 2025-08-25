@@ -5,6 +5,7 @@ import sys
 
 from mpy_init.core.logic.graph_builder import GraphBuilder, GraphBuilderUnitRedefinitionError
 from mpy_init.core.node_prototype import NodeSet
+from mpy_init.core.unit_errors import UnitExecError
 from mpy_init.utils.parser import Parser
 from mpy_init.core.unit import Unit, MPUnit
 from mpy_init.utils.parser_error_list import ConfigErrorList, UnitErrorList
@@ -91,7 +92,18 @@ def main() -> int:
     # Iterate through all units in dependency order
     try:
         for unit in graph:
-            print(f"Processing unit: {unit.name}")
+            print(f"{unit.name:<12} {'core' if unit.isBuildIn() else 'ext.'}", end='')
+            try:
+                unit.start()
+                print(" ✅")
+            except UnitExecError as exec_err:
+                print(f" ❌ {exec_err}")
+            except Exception as e:
+                print(f"{file_name} internal failure❗")
+                sys.print_exception(e)
+                #traceback.print_exc()
+                return 0xFF
+
     except Exception as e:
         print(f"Error processing units: {e}")
         return 0xFF

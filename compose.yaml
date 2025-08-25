@@ -5,4 +5,5 @@ services:
       context: sandbox
     volumes:
       - ./mpy_init:/root/mpy_init:ro
-
+      - ./targets:/root/targets:ro
+    cap_add: ['ALL']

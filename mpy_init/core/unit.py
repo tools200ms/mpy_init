@@ -1,5 +1,7 @@
+import os
+
 from mpy_init import ABC, abstractmethod
-from mpy_init.utils.parser_errors import MissConfigurationError
+from mpy_init.core.unit_errors import UnitExecError
 
 """
     Defines unit file parameters: 
@@ -25,6 +27,8 @@ class Unit(ABC):
     name = property(get_name, set_name)
     description = property(get_description, set_description)
 
+    def isBuildIn(self):
+        return isinstance(self, MPUnit)
 
     @abstractmethod
     def start(self) -> None:
@@ -62,26 +66,22 @@ class ExecUnit(Unit):
         self._pid_file = pid_file
 
     def start(self) -> None:
-        pass
+        res = os.system(self._exec_start)
+        if res != 0:
+            raise UnitExecError(res)
 
     def stop(self) -> None:
-        pass
+        res = os.system(self._exec_stop)
+        if res != 0:
+            raise UnitExecError(res)
 
     def reload(self):
-        pass
+        res = os.system(self._exec_reload)
+        if res != 0:
+            raise UnitExecError(res)
 
 
 class MPUnit(Unit, ABC):
     
     def __init__(self, description: str = None):
         super().__init__(type(self).__name__, description)
-    
-    @staticmethod
-    def load(name, description, values = ()):
-        try:
-            import mpy_init.core.units
-            cls = getattr(mpy_init.core.units, name)
-
-            return cls(description, *values)
-        except AttributeError:
-            raise MissConfigurationError(f"Package '{name}' not found in predefined units")

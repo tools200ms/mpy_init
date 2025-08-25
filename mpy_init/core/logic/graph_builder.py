@@ -5,7 +5,7 @@ from mpy_init.core.unit import Unit
 
 class GraphBuilder:
     def __init__(self):
-        self._order = []
+        self._nodes = []
 
 
     def set_target(self, target_name: str):
@@ -16,12 +16,13 @@ class GraphBuilder:
         if self._target_name is None:
             raise RuntimeError("Target name must be set before adding units")
 
-        self._order.append(Node(nodep, u))
-        self._order.sort()
+        self._nodes.append(Node(nodep, u))
+        #self._order.sort()
     
     def scratch(self):
         scratched = []
-        for node in self._order:
+        self._nodes.sort()
+        for node in self._nodes:
             scratched.append(node.unit)
 
         return tuple(scratched)

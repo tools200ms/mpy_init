@@ -1,6 +1,6 @@
 from mpy_init.core.unit import MPUnit
 
-
+# micropython.schedule(func, arg)
 class scheduler(MPUnit):
     """
     Unit responsible for system scheduling and task management.

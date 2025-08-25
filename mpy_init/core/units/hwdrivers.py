@@ -6,7 +6,6 @@ class hwdrivers(MPUnit):
     def __init__(self, description: str):
         super().__init__(description)
 
-
     def start(self) -> None:
         pass
 
