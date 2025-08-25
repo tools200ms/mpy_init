@@ -117,6 +117,8 @@ def main() -> int:
     if error_list.hasErrors():
         print(error_list)
 
+    os.system('/bin/bash')
+
     return ret_code
 
 if __name__ == '__main__':
