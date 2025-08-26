@@ -61,7 +61,7 @@ def cpu_stress_thread(name, result, lock=None):
 
 
 # 'const()' function to define constants in MicroPython.
-PRIME_NUMBER_TOTAL_CNT = const(1600)
+PRIME_NUMBER_TOTAL_CNT = const(3600)
 
 print(f"Python implementation: {sys.implementation.name}")
 
