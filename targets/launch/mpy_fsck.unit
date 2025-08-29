@@ -6,4 +6,5 @@ after = modules
 provides = fsck
 
 # process control
-mpy_package = fsck
+#mpy_package = fsck
+exec_start = /bin/mount -o rw,remount /

@@ -1,0 +1,12 @@
+
+description = Network configuration
+
+# Service order and dependency control:
+after = bootmisc,hwdrivers,modules
+requires = localmount hostname
+
+# Service defined targets:
+defines = network
+
+# process control
+exec_start = /etc/init.d/networking start
