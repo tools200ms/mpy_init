@@ -5,4 +5,5 @@ description = Load modules.
 provides = modules
 
 # process control
-mpy_package = modules
+#mpy_package = modules
+exec_start = /etc/init.d/modules start
