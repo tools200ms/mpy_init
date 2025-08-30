@@ -27,16 +27,14 @@ We believe that the above scope defines a good balance in what a modern init sys
 
 ## Features
 
-Micropython brings two interesting features to initsystem: 
-1. **API out-of-the-box** — Micropython's VM is available since boot time throughout the entire OS run-time. Integration with init-system allows on bringing in API and web access that is handled by isolated VM. That simplifies VM/device initialization and configuration over network providing layer of security.
+Micropython brings the following interesting features to initsystem:
 
-2. **Display/keypad support for SbC configurations** — if run on SbC (Single board Computer — such as Raspberry PI) and specific peripherals are attached: `mpy_init` by using Micropython's hardware drivers can for instance:
-   - display a status and other information about a device on a small display
-   - can perform authentification based on physical button press
+**API out-of-the-box** — Micropython's VM is available since boot time throughout the entire OS run-time. Integration with init-system allows on bringing in API and web access that is handled by isolated VM. That simplifies device initialization and configuration over network, providing a layer of security.
+
 
 ## Security
 
-Micropython lacks a built-in mechanism for process separation. Therefore project elevates Unix kernel features to ensure proper privilabe and separation handling.
+Micropython lacks a built-in mechanism for process separation. Therefore, project elevates Unix kernel features to ensure proper privilabe and separation handling.
 
 
 
