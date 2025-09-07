@@ -1,0 +1,11 @@
+[tool.poetry]
+name = "mpy_init"
+version = "0.1.0"
+description = "MicroPython Unix Init System"
+authors = ["Mateusz Piwek <mp@200ms.net>"]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[tool.poetry.dev-dependencies]
+micropython-unittest = "0.4"
