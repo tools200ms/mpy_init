@@ -16,12 +16,17 @@ class GraphBuilder:
         if self._target_name is None:
             raise RuntimeError("Target name must be set before adding units")
 
-        self._nodes.append(Node(nodep, u))
-        #self._order.sort()
+        node = Node(nodep, u);
+        #for n in set(node.back_refs) & set(self._nodes):
+
+
+        self._nodes.append(node)
+
     
     def scratch(self):
         scratched = []
         self._nodes.sort()
+
         for node in self._nodes:
             scratched.append(node.unit)
 

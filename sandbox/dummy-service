@@ -1,0 +1,4 @@
+#!/usr/bin/micropython
+
+base_name = __file__.split('/')[-1]
+print(f"Pretending to be '{base_name}'")

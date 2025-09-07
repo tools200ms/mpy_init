@@ -1,5 +1,6 @@
 import os
 import sys
+
 #import logging
 #import traceback
 
@@ -50,8 +51,8 @@ def main() -> int:
 
             try:
                 parser = Parser.loadFile(target_dir + '/' + file_name)
-                unit_prototype = parser.parse()
-                gb.add(*unit_prototype.update())
+                unit, node_prototype = parser.parse()
+                gb.add(unit, node_prototype)
 
                 # logger.info(f"Loaded unit: {unit_prototype.unitname} ✅")
                 print(f"{parser.get_unitproto().unitname:<15} loaded ✅")
@@ -81,7 +82,8 @@ def main() -> int:
                 ret_code |= 2**(term_errors.index(type(err)))
             except Exception as e:
                 print(f"{file_name} internal failure❗")
-                sys.print_exception(e)
+                #sys.print_exception(e)
+                #import traceback
                 #traceback.print_exc()
                 return 0xFF
             finally:

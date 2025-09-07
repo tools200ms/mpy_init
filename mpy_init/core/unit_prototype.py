@@ -37,9 +37,9 @@ class UnitPrototype:
         Validators.validateName(name)
         self._name = name.lower()
 
-        self._node_proto = NodePrototype(node_set)
+        self._node_proto = node_set.add(name)
 
-    def get_node_proto(self):
+    def getNodeProto(self):
         return self._node_proto
 
     def get_unitname(self):
@@ -53,7 +53,6 @@ class UnitPrototype:
     
     unitname = property(get_unitname)
     description = property(get_description, set_description)
-    node_proto = property(get_node_proto)
 
 
     def get_exec_start(self):
@@ -81,12 +80,12 @@ class UnitPrototype:
     exec_reload = property(get_exec_reload, set_exec_reload)
     pid_file = property(get_pid_file, set_pid_file)
 
-    set_after = lambda self, value: self.node_proto.set_after(value)
-    set_before = lambda self, value: self.node_proto.set_before(value)
-    set_wants = lambda self, value: self.node_proto.set_wants(value)
-    set_requires = lambda self, value: self.node_proto.set_requires(value)
-    set_provides = lambda self, value: self.node_proto.set_provides(value)
-    set_defines = lambda self, value: self.node_proto.set_defines(value)
+    set_after = lambda self, value: self._node_proto.set_after(value)
+    set_before = lambda self, value: self._node_proto.set_before(value)
+    set_wants = lambda self, value: self._node_proto.set_wants(value)
+    set_requires = lambda self, value: self._node_proto.set_requires(value)
+    set_provides = lambda self, value: self._node_proto.set_provides(value)
+    set_defines = lambda self, value: self._node_proto.set_defines(value)
 
     def get_mpy_package(self):
         return self._mpy_package
@@ -111,7 +110,9 @@ class UnitPrototype:
         properties = {}
 
         for attr_name, attr_value in vars(self).items():
-            if attr_name.startswith('_') and attr_value is not None:
+            if  attr_name.startswith('_') and \
+                attr_value is not None and \
+                isinstance(attr_value, (str, int, float) ):
                 properties[attr_name[1:]] = attr_value
 
         return properties
