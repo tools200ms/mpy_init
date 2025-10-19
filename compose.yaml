@@ -5,5 +5,7 @@ services:
       context: sandbox
     volumes:
       - ./mpy_init:/root/mpy_init:ro
-      - ./targets:/root/targets:ro
+      - ./targets:/.targets:ro
     cap_add: ['ALL']
+    devices:
+      - /dev/fuse
