@@ -7,12 +7,34 @@ import sys
 from mpy_init.core.logic.graph_builder import GraphBuilder, GraphBuilderUnitRedefinitionError
 from mpy_init.core.node_prototype import NodeSet
 from mpy_init.core.unit_errors import UnitExecError
+from mpy_init.impl import Impl
 from mpy_init.utils.parser import Parser
 from mpy_init.core.unit import Unit, MPUnit
 from mpy_init.utils.parser_error_list import ConfigErrorList, UnitErrorList
 
 #logging.basicConfig(level=logging.INFO)
 #logger = logging.getLogger(__name__)
+
+py_impl = Impl.get()
+
+#if impl_name == 'micropython':
+#    const = getattr(__import__('micropython'), 'const')
+#else:
+#    def const(x):
+#        return x
+
+#impl_name = const(impl_name)
+
+import code
+code.interact(local=locals())
+
+
+
+
+if os.getenv('DBG_SERVER'):
+    print("Debugging mode is enabled")
+    add_remote_dbg__pydevd_pycharm("localhost", 5678)
+
 
 
 def main() -> int:

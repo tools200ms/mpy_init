@@ -3,6 +3,10 @@ name = "mpy_init"
 version = "0.1.0"
 description = "MicroPython Unix Init System"
 authors = ["Mateusz Piwek <mp@200ms.net>"]
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
+
+[tool.poetry.group.dev.dependencies]
+pydevd-pycharm = "~252.27397.106"

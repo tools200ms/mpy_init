@@ -5,7 +5,11 @@ services:
       context: sandbox
     volumes:
       - ./mpy_init:/root/mpy_init:ro
-      - ./targets:/.targets:ro
+      - ./targets:/root/targets:ro
+      - ./pyproject.toml:/root/pyproject.toml:ro
+    network_mode: host
+    environment:
+      DBG_SERVER: "127.0.0.1:5678"
     cap_add: ['ALL']
     devices:
       - /dev/fuse

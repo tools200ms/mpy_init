@@ -1,15 +1,18 @@
-FROM 200ms/alpinenet_dev2-new
+FROM 200ms/alpinenet_dev2:testing
+
+ENV FEATURES="python"
+
+ENV PKGS_PY="poetry"
+ENV PKGS_MPY="micropython"
 
 # Notice, pypy3 is in testing repo.
-ENV PKGS_CORE="micropython python3 util-linux-misc"
+ENV PKGS_CORE="util-linux-misc"
 # Install packages requided by unit files:
 ENV PKGS_DEP_UNIT="busybox dropbear nftables util-linux-misc"
 
 # Set `PKGS_ADD` so `200ms/alpinenet_dev2` installs these packages at build time:
-ENV PKGS_ADD="$PKGS_CORE $PKGS_DEP_UNIT"
+ENV PKGS_ADD="$PKGS_CORE $PKGS_PY $PKGS_MPY $PKGS_DEP_UNIT"
 
-# for sharing files with propper UID:GID
-ENV FEATURES="dev2fs"
 ENV DEV2FS_TARGET="/root/targets"
 ENV DEV2FS_SOURCE="/.targets"
 
