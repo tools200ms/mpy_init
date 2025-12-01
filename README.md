@@ -53,3 +53,5 @@ Micropython lacks a built-in mechanism for process separation. Therefore, projec
 # References
 
 - The MicroPython Project repository [link](https://github.com/micropython/micropython).
+- Micropython [APK BUILD](https://gitlab.alpinelinux.org/alpine/aports/-/tree/master/community/micropython)
+

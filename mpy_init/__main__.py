@@ -1,7 +1,9 @@
 import os
 import sys
 
-#import logging
+import logging
+
+from mpy_init.core.loader import logger
 #import traceback
 
 from mpy_init.core.logic.graph_builder import GraphBuilder, GraphBuilderUnitRedefinitionError
@@ -9,7 +11,6 @@ from mpy_init.core.node_prototype import NodeSet
 from mpy_init.core.unit_errors import UnitExecError
 from mpy_init.impl import Impl
 from mpy_init.utils.parser import Parser
-from mpy_init.core.unit import Unit, MPUnit
 from mpy_init.utils.parser_error_list import ConfigErrorList, UnitErrorList
 
 #logging.basicConfig(level=logging.INFO)
@@ -76,8 +77,8 @@ def main() -> int:
                 unit, node_prototype = parser.parse()
                 gb.add(unit, node_prototype)
 
-                # logger.info(f"Loaded unit: {unit_prototype.unitname} ✅")
-                print(f"{parser.get_unitproto().unitname:<15} loaded ✅")
+                logger.info(f"{parser.get_unitproto().unitname:<15} loaded ✅")
+                #print()
 
                 # if 'mpy_package' in unit_conf:
                 #     buildin_unit_name = unit_conf['mpy_package']
