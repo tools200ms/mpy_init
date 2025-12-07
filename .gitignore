@@ -4,6 +4,8 @@ build/
 dist/
 venv/
 .venv/
+.mpy_venv/
+
 sandbox/pipes/*
 *.log
 *.mo
