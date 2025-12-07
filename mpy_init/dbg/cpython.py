@@ -1,4 +1,4 @@
-from mpy_init.impl._base import Implementation
+from mpy_init.dbg._base import Implementation
 
 
 class CPython(Implementation):

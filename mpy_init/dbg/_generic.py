@@ -1,8 +1,8 @@
 import sys
 
-from mpy_init.impl.cpython import CPython
-from mpy_init.impl.micropython import MicroPython
-from mpy_init.impl.pypy import PyPy
+from mpy_init.dbg.cpython import CPython
+from mpy_init.dbg.micropython import MicroPython
+from mpy_init.dbg.pypy import PyPy
 
 
 class Impl:

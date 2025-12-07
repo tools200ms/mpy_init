@@ -1,22 +1,22 @@
 import os
 import sys
 
-import logging
-
-from mpy_init.core.loader import logger
+from mpy_init.core.environment import Environment
+from mpy_init.core.logger import Logger
 #import traceback
 
 from mpy_init.core.logic.graph_builder import GraphBuilder, GraphBuilderUnitRedefinitionError
 from mpy_init.core.node_prototype import NodeSet
 from mpy_init.core.unit_errors import UnitExecError
-from mpy_init.impl import Impl
 from mpy_init.utils.parser import Parser
 from mpy_init.utils.parser_error_list import ConfigErrorList, UnitErrorList
 
 #logging.basicConfig(level=logging.INFO)
-#logger = logging.getLogger(__name__)
+logger = Logger.get()
 
-py_impl = Impl.get()
+env = Environment.init()
+
+print( "IMPLEMENTATION: " + Environment.info() )
 
 #if impl_name == 'micropython':
 #    const = getattr(__import__('micropython'), 'const')
@@ -26,16 +26,24 @@ py_impl = Impl.get()
 
 #impl_name = const(impl_name)
 
-import code
-code.interact(local=locals())
-
+def start_interactive_shell():
+    try:
+        import code
+        logger.debug("Interactive shell available")
+        code.interact(local=locals())
+    except ImportError:
+        logger.debug("Interactive shell not available")
+        pass
 
 
 
 if os.getenv('DBG_SERVER'):
+    #import pydevd_pycharm
     print("Debugging mode is enabled")
-    add_remote_dbg__pydevd_pycharm("localhost", 5678)
+    #add_remote_dbg__pydevd_pycharm("localhost", 5678)
 
+if os.getenv('INTERACTIVE_SHELL'):
+    start_interactive_shell()
 
 
 def main() -> int:
@@ -78,7 +86,6 @@ def main() -> int:
                 gb.add(unit, node_prototype)
 
                 logger.info(f"{parser.get_unitproto().unitname:<15} loaded ✅")
-                #print()
 
                 # if 'mpy_package' in unit_conf:
                 #     buildin_unit_name = unit_conf['mpy_package']
@@ -100,12 +107,12 @@ def main() -> int:
                 #             return 1
                 #         raise
             except term_errors as err:
-                print(f"{parser.get_unitproto().unitname:<15} failed ❌")
+                logger.error(f"{parser.get_unitproto().unitname:<15} failed ❌")
                 error_list.append(err)
                 ret_code |= 2**(term_errors.index(type(err)))
             except Exception as e:
                 print(f"{file_name} internal failure❗")
-                #sys.print_exception(e)
+                sys.print_exception(e)
                 #import traceback
                 #traceback.print_exc()
                 return 0xFF
@@ -140,7 +147,7 @@ def main() -> int:
     #     print(f"Unexpected error: {e}", file=sys.stderr)
     #     return 1
     if error_list.hasErrors():
-        print(error_list)
+        logger.error(error_list)
 
     os.system('/bin/bash')
 

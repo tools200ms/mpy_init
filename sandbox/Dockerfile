@@ -30,7 +30,8 @@ RUN mkdir -p $MPY_SRC && git clone $MPY_GIT_URL $MPY_SRC  && \
     make -C $MPY_SRC/ports/unix submodules && \
     make install $MPY_MAKE_FLAGS -C $MPY_SRC/ports/unix
 
-RUN micropython -mip install logging
+RUN micropython -m mip install logging
+RUN micropython -m mip install pprint
 
 RUN mkdir -p $DEV2FS_TARGET
 # Create 'dummy service':
