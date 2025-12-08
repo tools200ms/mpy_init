@@ -1,7 +1,6 @@
 import os
 import sys
 
-from mpy_init.core.environment import Environment
 from mpy_init.core.logger import Logger
 #import traceback
 
@@ -9,14 +8,11 @@ from mpy_init.core.logic.graph_builder import GraphBuilder, GraphBuilderUnitRede
 from mpy_init.core.node_prototype import NodeSet
 from mpy_init.core.unit_errors import UnitExecError
 from mpy_init.utils.parser import Parser
-from mpy_init.utils.parser_error_list import ConfigErrorList, UnitErrorList
+from mpy_init.utils.parser_error_list import ConfigErrorList, UnitErrorList, LabelMultipleValueError
 
 #logging.basicConfig(level=logging.INFO)
 logger = Logger.get()
 
-env = Environment.init()
-
-print( "IMPLEMENTATION: " + Environment.info() )
 
 #if impl_name == 'micropython':
 #    const = getattr(__import__('micropython'), 'const')
@@ -66,7 +62,8 @@ def main() -> int:
     gb = GraphBuilder()
     ret_code = 0x0
     base_dir = 'targets'
-    term_errors = (UnitErrorList, GraphBuilderUnitRedefinitionError)
+    # Exceptions that can be thrown if unit files are miss-configured
+    correct_errors = (UnitErrorList, GraphBuilderUnitRedefinitionError)
 
     Parser.register(NodeSet())
 
@@ -106,10 +103,10 @@ def main() -> int:
                 #             print(f"Invalid configuration key in {file_path}: {str(e)}", file=sys.stderr)
                 #             return 1
                 #         raise
-            except term_errors as err:
+            except correct_errors as err:
                 logger.error(f"{parser.get_unitproto().unitname:<15} failed ❌")
                 error_list.append(err)
-                ret_code |= 2**(term_errors.index(type(err)))
+                ret_code |= 2**(correct_errors.index(type(err)))
             except Exception as e:
                 print(f"{file_name} internal failure❗")
                 sys.print_exception(e)

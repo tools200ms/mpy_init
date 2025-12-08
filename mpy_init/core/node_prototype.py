@@ -1,7 +1,7 @@
 from mpy_init.core.unit import Unit
 from mpy_init.utils.parser_common import ParserCommon
 from mpy_init.utils.parser_errors import LabelValueError
-from mpy_init.utils.validator_errors import ValidationError
+from mpy_init.utils.messages import ValidationError
 
 # NodeprototypeSet
 class NodeSet:

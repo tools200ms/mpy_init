@@ -1,0 +1,10 @@
+
+
+description = Display Login Prompt
+after = *
+
+# Service defined targets:
+provides = getty
+
+# qrencode -t ANSIUTF8 "Text"
+exec_start = /bin/login

@@ -1,7 +1,7 @@
 import unittest
 
 from mpy_init.utils.validator import Validators
-from mpy_init.utils.validator_errors import ValidatorsNameDoesNotStartWithLetterError, ValidatorsInvalidNameError, \
+from mpy_init.utils.messages import ValidatorsNameDoesNotStartWithLetterError, ValidatorsInvalidNameError, \
     ValidatorsEmptyNameError
 
 

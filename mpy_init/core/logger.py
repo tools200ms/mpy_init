@@ -1,7 +1,6 @@
 import logging
 from logging import DEBUG, INFO, WARNING, ERROR, CRITICAL
 
-from mpy_init.core.environment import Environment
 
 _init_logger = None
 
@@ -9,7 +8,6 @@ class InitFormatter(logging.Formatter):
     def __init__(self, fmt='%(msecs)s - %(name)s - %(levelname)s - %(message)s'):
         super().__init__()
 
-        print("IMPLEMENTATION: " + Environment.info())
         self.fmt = fmt
 
 class Logger(logging.Logger):

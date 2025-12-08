@@ -1,5 +1,4 @@
 
-from mpy_init.utils.parser_errors import LabelValueError
 
 class ErrorList:
     def __init__(self):
@@ -26,7 +25,7 @@ class ErrorList:
     def hasErrors(self):
         return len(self._error_list) > 0
 
-
+# List of errors found in (entire) configuration
 class ConfigErrorList(Exception, ErrorList):
 
     def __init__(self):
@@ -53,11 +52,3 @@ class UnitErrorList(Exception, ErrorList):
         return f"""File '{self._file_path}': 
 {''.join(map(str, self._error_list))}
 """
-
-# Errors found for a single label
-class LabelValueErrorList(LabelValueError, ErrorList):
-
-    def __init__(self):
-        ErrorList.__init__(self)
-
-    # TODO add __str__ for printing cumulated messages

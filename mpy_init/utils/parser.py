@@ -3,7 +3,7 @@ import os
 from mpy_init.core.node_prototype import NodeSet
 from mpy_init.core.unit import Unit
 from mpy_init.core.unit_prototype import UnitPrototype
-from mpy_init.utils.parser_error_list import UnitErrorList, LabelValueErrorList
+from mpy_init.utils.parser_error_list import UnitErrorList
 from mpy_init.utils.parser_errors import MisformattedLineError, LabelValueError, ConfigError, MissConfigurationError
 from mpy_init.utils.py_compatibility import const
 
@@ -92,7 +92,6 @@ class Parser:
             raise RuntimeError("NodeSet is not registered")
         error_list = UnitErrorList(self._origin_file_path)
 
-        
         for line_no, line in enumerate(self._config_txt.splitlines(), 1):
         
             # Skip empty lines
@@ -110,7 +109,7 @@ class Parser:
 
                 self._unit_proto.setLabel(label, value)
 
-            except (LabelValueError, ConfigError) as parser_err:
+            except (LabelValueError, LabelMultipleValueError, ConfigError) as parser_err:
                 # Errors encountered while parsing value:
                 # add line no. that has been not available in validator:
                 parser_err.addLineNo(line_no)

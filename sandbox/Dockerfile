@@ -9,7 +9,7 @@ ENV PKGS_DEP_MPY "gcc git make musl-dev libbsd-dev libffi-dev"
 # Notice, pypy3 is in testing repo.
 ENV PKGS_CORE="util-linux-misc"
 # Install packages requided by unit files:
-ENV PKGS_DEP_UNIT="busybox dropbear nftables util-linux-misc"
+ENV PKGS_DEP_UNIT="agetty busybox dropbear nftables util-linux-misc"
 
 # Set `PKGS_ADD` so `200ms/alpinenet_dev2` installs these packages at build time:
 ENV PKGS_ADD="$PKGS_CORE $PKGS_PY $PKGS_DEP_MPY $PKGS_DEP_UNIT"
