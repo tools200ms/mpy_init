@@ -2,15 +2,15 @@ from mpy_init import ABC
 
 class NamingBaseErrorMesg:
     # name is totally missing
-    MISSING_NAME = None
+    MISSING = None
     # name has invalid characters
-    INVALID_NAME = None
+    INVALID = None
     # name has all valid characters, but there are limitations that are not fulfiled (e.g. first character can't by letter)
-    ILLEGAL_NAME = None
+    ILLEGAL = None
     # name is too long
-    TOOLONG_NAME = None
+    TOOLONG = None
     # name is redefined
-    REDEFIN_NAME = None
+    REDEFIN = None
 
 # section
 
