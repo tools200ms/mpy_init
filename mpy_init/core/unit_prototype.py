@@ -4,10 +4,10 @@
 Unit prototype class providing base functionality for unit configuration and validation.
 """
 from mpy_init.core.node_prototype import NodeSet, NodePrototype
-from mpy_init.core.param import Param
-from mpy_init.core.unit import ExecUnit, MPUnit
-from mpy_init.utils.validator import Validators
-from mpy_init.utils.parser_errors import UnknownLabelError, LabelValueError, MissConfigurationError
+from mpy_init.core.unit import ExecUnit
+from mpy_init.lib.messages import LabelBaseErrorMsg
+from mpy_init.utils.parser_errors import MissConfigurationError, LabelError
+from mpy_init.utils.precheck import PreCheck
 
 
 class UnitNameError(Exception):
@@ -34,7 +34,8 @@ class UnitPrototype:
     _mpy_package: str = None
 
     def __init__(self, name, node_set: NodeSet):
-        Validators.validateName(name)
+        # validate unit name
+        PreCheck.serviceName(name)
         self._name = name.lower()
 
         self._node_proto = node_set.add(name)
@@ -96,11 +97,11 @@ class UnitPrototype:
 
     def setLabel(self, label_name:str, value:str):
         # Can throwException LabelError
-        Param.pre_check(label_name, value)
+        PreCheck.LabelAndValue(label_name, value)
         set_fun = 'set_' + label_name
 
         if not hasattr(self, set_fun):
-            raise UnknownLabelError(label_name)
+            raise LabelError(LabelBaseErrorMsg.UNKNOWN_NAME, label_name)
 
         getattr(self, set_fun)(value)
         #setattr(self, label_name, value)

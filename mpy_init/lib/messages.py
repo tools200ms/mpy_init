@@ -14,19 +14,28 @@ class NamingBaseErrorMesg:
 
 # section
 
+class LineBaseErrorMsg (NamingBaseErrorMesg):
+    INVALID = "Misformatted line {self._line_no}: \n\t{self._line[0:12]}..."
+
 # Validators for parameters:
 class LabelBaseErrorMsg (NamingBaseErrorMesg):
     MISSING_NAME = "Label cannot be empty"
     INVALID_NAME = "Configuration error, allowed keywords: after, ...."
     ILLEGAL_NAME = None
     TOOLONG_NAME = "{label_name}' exceeds maximum length of {self._limit} characters"
+    # Logic
+    UNKNOWN_NAME = "Unknown label '{self._label_name}'"
+
+class ValBaseErrorMsg (NamingBaseErrorMesg):
+    MISSING_NAME = "No value provided"
+    TOOLONG_NAME = "Too long name: '{self._value}'"
 
 # Values for the 'service' section:
 class ServiceErrorMsg (NamingBaseErrorMesg):
-    MISSING_NAME = "No name provided"
-    INVALID_NAME = "Invalid name: {self.name}\nService name must be alpha-numeric with '-' and '_' characters allowed and must start with a letter."
+    MISSING_NAME = None
+    TOOLONG_NAME = "{service_name}' exceeds maximum length of {self._limit} characters"
+    INVALID_NAME = "Invalid name: {self._val}\nService name must be alpha-numeric with '-' and '_' characters allowed and must start with a letter."
     ILLEGAL_NAME = "Illegal first character: '{self._name}'\nFirst character for service name must be a letter."
-    TOOLONG_NAME = "Too long name: '{self._name}'"
     REDEFIN_NAME = "Re-defined service name: {self._name}\nService names must be unique."
 
 # Values for the 'exec' section

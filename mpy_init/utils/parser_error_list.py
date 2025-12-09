@@ -26,7 +26,7 @@ class ErrorList:
         return len(self._error_list) > 0
 
 # List of errors found in (entire) configuration
-class ConfigErrorList(Exception, ErrorList):
+class GlobalErrorList(Exception, ErrorList):
 
     def __init__(self):
         ErrorList.__init__(self)
@@ -39,7 +39,7 @@ Found {self.cntErrors()} error(s):
 )}"""
 
 # List of errors found in unit configuration (file)
-class UnitErrorList(Exception, ErrorList):
+class ConfErrorList(Exception, ErrorList):
 
     def __init__(self, file_path: str):
         ErrorList.__init__(self)

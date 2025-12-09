@@ -1,11 +1,12 @@
 import os
 
+from mpy_init import const
 from mpy_init.core.node_prototype import NodeSet
-from mpy_init.core.unit import Unit
 from mpy_init.core.unit_prototype import UnitPrototype
-from mpy_init.utils.parser_error_list import UnitErrorList
-from mpy_init.utils.parser_errors import MisformattedLineError, LabelValueError, ConfigError, MissConfigurationError
-from mpy_init.utils.py_compatibility import const
+from mpy_init.lib.messages import LineBaseErrorMsg
+from mpy_init.utils.parser_error_list import ConfErrorList
+from mpy_init.utils.parser_errors import ConfigError, MissConfigurationError, ValError, \
+    ValListError, LineError
 
 
 class Parser:
@@ -90,7 +91,7 @@ class Parser:
         """
         if self._node_set is None:
             raise RuntimeError("NodeSet is not registered")
-        error_list = UnitErrorList(self._origin_file_path)
+        error_list = ConfErrorList(self._origin_file_path)
 
         for line_no, line in enumerate(self._config_txt.splitlines(), 1):
         
@@ -101,6 +102,7 @@ class Parser:
             if not line or line[0] == '#':
                 continue
 
+            label, value = None, None
             try:
                 # Split by = and let ValueError propagate up
                 # Can throw: ValueError: not enough values to unpack (expected 2, got 1)
@@ -109,18 +111,18 @@ class Parser:
 
                 self._unit_proto.setLabel(label, value)
 
-            except (LabelValueError, LabelMultipleValueError, ConfigError) as parser_err:
+            except (ValError, ValListError, ConfigError) as parser_err:
                 # Errors encountered while parsing value:
                 # add line no. that has been not available in validator:
-                parser_err.addLineNo(line_no)
+                parser_err.suplLineNo(line_no)
                 # Add a label name that has been not available in validator:
-                if isinstance(parser_err, LabelValueError):
-                    parser_err.addLabel(label)
+                if isinstance(parser_err, ValError):
+                    parser_err.suplLabel(label)
                 # add errors to the list and continue parsing so all syntax errors
                 # are cached
                 error_list.append(parser_err)
-            except ValueError as v_err:
-                error_list.append(MisformattedLineError(line_no, line))
+            except ValueError:
+                error_list.append(LineError(LineBaseErrorMsg.INVALID, line_no, line))
 
             # if value == '':
             #     raise ValueError(ParserError.print_error(f"Invalid line: '{line}'", line_no, self._file_path))
@@ -130,6 +132,7 @@ class Parser:
             #         ParserError.print_error(f"Value for label '{label}' exceeds maximum length of 1024 characters",
             #                                 line_no, self._file_path))
 
+        unit, node_proto = None, None
         try:
             unit, node_proto = self._unit_proto.update()
         except MissConfigurationError as err:

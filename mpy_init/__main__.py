@@ -8,7 +8,7 @@ from mpy_init.core.logic.graph_builder import GraphBuilder, GraphBuilderUnitRede
 from mpy_init.core.node_prototype import NodeSet
 from mpy_init.core.unit_errors import UnitExecError
 from mpy_init.utils.parser import Parser
-from mpy_init.utils.parser_error_list import ConfigErrorList, UnitErrorList, LabelMultipleValueError
+from mpy_init.utils.parser_error_list import GlobalErrorList, ConfErrorList
 
 #logging.basicConfig(level=logging.INFO)
 logger = Logger.get()
@@ -58,12 +58,12 @@ def main() -> int:
     #     print("Usage: mpy_init <directory>", file=sys.stderr)
     #     return 1
 
-    error_list = ConfigErrorList()
+    error_list = GlobalErrorList()
     gb = GraphBuilder()
     ret_code = 0x0
     base_dir = 'targets'
     # Exceptions that can be thrown if unit files are miss-configured
-    correct_errors = (UnitErrorList, GraphBuilderUnitRedefinitionError)
+    correct_errors = (ConfErrorList, GraphBuilderUnitRedefinitionError)
 
     Parser.register(NodeSet())
 

@@ -1,7 +1,6 @@
 from mpy_init.core.unit import Unit
 from mpy_init.utils.parser_common import ParserCommon
-from mpy_init.utils.parser_errors import LabelValueError
-from mpy_init.utils.messages import ValidationError
+
 
 # NodeprototypeSet
 class NodeSet:
@@ -92,11 +91,7 @@ class NodePrototype:
         return self._defines
 
     def set_defines(self, srv_name):
-        try:
-            self._defines = ParserCommon.normalize_servicename(srv_name)
-
-        except ValidationError as v_err:
-            raise LabelValueError(v_err)
+        self._defines = ParserCommon.normalize_servicename(srv_name)
 
     after = property(get_after, set_after)
     before = property(get_before, set_before)
