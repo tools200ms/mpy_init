@@ -26,14 +26,12 @@ class HyInitSyntaxError (Exception):
         if self._line_no == -1:
             return ""
 
-        return f"""at line: {self._line_no}"""
+        return f"at line: {self._line_no}"
 
     def __str__(self):
-        return self.getMesg(self)
+        return f"""  {self.getMesgPos()}:
+{"\n".join('    ' + line for line in self.getMesg(self).splitlines())}"""
 
-#class LogicError(ConfigError):
- #   def __init__(self, msg: str, file_path: str):
-  #      super().__init__(msg)
 
 
 class HyLineError(HyInitSyntaxError):
@@ -73,4 +71,3 @@ class ValListError(HyValueError, ErrorList):
         if len(self._error_list) == 1:
             return self._error_list[0]
         return self
-

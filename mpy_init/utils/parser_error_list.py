@@ -34,6 +34,7 @@ class GlobalErrorList(Exception, ErrorList):
     def __str__(self):
         return f"""
 Found {self.cntErrors()} error(s): 
+
 {
     ''.join(map(str, self._error_list)
 )}"""
