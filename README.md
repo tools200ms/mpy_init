@@ -1,18 +1,37 @@
-# MicroPython init system [Proposal + experimental code]
+# 'mpy-init' – Unix init system developed in Python [Experimental code]
 
-This is a proposal for a Linux init system based on MicroPython. **Notice: included source code is an experimental, proof-of-concept working version to be available soon.**
+This is a Unix init system developed in Python. 
+
+> **Q:**
+> 
+> What's the point of developing an init system that should have a small footprint using hi-level language that additionally requires VM (an overhead)?
+> 
+> **A:**
+> 
+> Python in the form of **MicroPython** was successfully re-implemented to run on microcontrollers – small computers with a very limited memory and CPU resources. 
+> 
+> Python is a flexible object-oriented language, great for expressing complexity – that Init System must deal with.
+
+Project is developed with MicroPython limitations in mind (simplified modules and language API); therefore, it can be run on both - MicroPython and CPyhon. It is aimed to be run in MicroPython 'unix' port.
+
+Project's testing bench is AlpineLinux, however, porting it to another Linux distribution or unix system should be relatively straight forward.
 
 ## Design philosophy
 
-Proposed MicroPython-based init system, called `mpy_init`, is designed to run on bare metal and in containers.
+`mpy_init` implements `target-based` system initialization approach - in the contrast to obosolet [runlevels](https://en.wikipedia.org/wiki/Runlevel). 
 
-### Project assumptions:
+Defined targets are:
 
-1. **Cross-platform** – `mpy_init` inherits MicroPython's cross-platform nature, ensuring compatibility with all UNIX systems.
+- **init** - does initializations of special filesystems: devfs, procfs, sysfs, 
+- **launch** - cheks and mounts root and user filesystems, loads drivers, sets up hardware settings, launches logging capability
+- **network** - initializes network
+- **network.online** – brings up network services that require network access; fullfilling this target means that the machine is probably online
+- **system** - starts system services such as SSH server
+- **user** - runs user related services: login manager, task scheduler.
 
-2. **Target-based** – `mpy_init` implements a current, target-based system initialization approach, similar to what is used in SystemD.
+### Project (planned) features:
 
-3. **In between OpenRC and SystemD** – `mpy_init` goes beyond the traditional scope of classic init systems like OpenRC and SysVinit. In addition to service initialization and control, it also manages: 
+1. **In between OpenRC and SystemD** – `mpy_init` goes beyond the traditional scope of classic init systems like OpenRC and SysVinit. In addition to service initialization and control, it also manages: 
 
     a. **Time** – ensures OS runs with a correct time.
 
@@ -21,33 +40,10 @@ Proposed MicroPython-based init system, called `mpy_init`, is designed to run on
      c. **Periodic tasks** – provides cron functionality.
 
      d. **SSD trimming** – Ensure partitions located on flash storage are mounted with a TRIM option, and/or periodic trims are enabled.
-3. **Parallel boot** – boot services in parallel (if no dependency bound).
+2. **Parallel boot** – boot services in parallel (if no dependency bound).
+3. **Web API** – for initialization and management of machines over network.
 
-We believe that the above scope defines a good balance in what a modern init system should do, what not.
-
-## Features
-
-Micropython brings the following interesting features to initsystem:
-
-**API out-of-the-box** — Micropython's VM is available since boot time throughout the entire OS run-time. Integration with init-system allows on bringing in API and web access that is handled by isolated VM. That simplifies device initialization and configuration over network, providing a layer of security.
-
-
-## Security
-
-Micropython lacks a built-in mechanism for process separation. Therefore, project elevates Unix kernel features to ensure proper privilabe and separation handling.
-
-
-
-1. **Performance** - having MicroPython's VM already loaded makes scripts (compiled to bytecodes) to be run fast. Moreover, MicroPython is light-weight and optimized for resource-poor devices. Therefore, even in the case of running it on slow hardware, it should be a suitable solution.
-
-2. **Security through simplification** - shell scripts can be replaced by Python code that is easier to read and audit.
-
-3. **Efficient development: debug and testing tools** - Python provides robust development and testing tools.
-
-4. **More powerful shell** - traditional shell (bash, ash) can be replaced with [ipython](https://github.com/ipython/ipython) or [Xonsh](https://xon.sh/) - shells developed in Python. These projects keep compatibility with traditional shells (and theirs pros), while providing also Python features (even more Pros!).
-
-
-
+I believe that the above scope defines a good balance in what a modern init system should do, what not.
 
 
 # References
