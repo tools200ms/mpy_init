@@ -3,10 +3,9 @@ import os
 from mpy_init import const
 from mpy_init.core.node_prototype import NodeSet
 from mpy_init.core.unit_prototype import UnitPrototype
-from mpy_init.lib.messages import LineBaseErrorMsg
+from mpy_init.lib.syntax_errors import ValError, LineSyntaxError
 from mpy_init.utils.parser_error_list import ConfErrorList
-from mpy_init.utils.parser_errors import ConfigError, MissConfigurationError, ValError, \
-    ValListError, LineError
+from mpy_init.utils.parser_errors import ValListError, HyInitSyntaxError
 
 
 class Parser:
@@ -111,7 +110,7 @@ class Parser:
 
                 self._unit_proto.setLabel(label, value)
 
-            except (ValError, ValListError, ConfigError) as parser_err:
+            except (ValError, ValListError, HyInitSyntaxError) as parser_err:
                 # Errors encountered while parsing value:
                 # add line no. that has been not available in validator:
                 parser_err.suplLineNo(line_no)
@@ -122,7 +121,7 @@ class Parser:
                 # are cached
                 error_list.append(parser_err)
             except ValueError:
-                error_list.append(LineError(LineBaseErrorMsg.INVALID, line_no, line))
+                error_list.append(LineSyntaxError(LineSyntaxError.invalid, line_no, line))
 
             # if value == '':
             #     raise ValueError(ParserError.print_error(f"Invalid line: '{line}'", line_no, self._file_path))

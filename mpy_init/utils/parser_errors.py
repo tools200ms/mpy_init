@@ -2,16 +2,19 @@ from mpy_init.utils.parser_error_list import ErrorList
 
 
 # Value error while parsing the config file
-class ConfigError (Exception):
+class HyInitSyntaxError (Exception):
     _line_no: int
     _msg: str
 
-    def __init__(self, msg:str, line_no:int = -1):
-        super().__init__(msg)
+    def __init__(self, msg, line_no: int = -1):
+        self.getMesg = msg
         self._line_no = line_no
 
     # def __init__(self, line_no: int = -1):
     #     self._line_no = line_no
+
+    def suplLine(self, line: str):
+        self._line = line
 
     def suplLineNo(self, line_no: int):
         self._line_no = line_no
@@ -25,48 +28,43 @@ class ConfigError (Exception):
 
         return f"""at line: {self._line_no}"""
 
-    def getMesg(self):
-        # '.format' is not implemented in MicroPython
-
-        return self.args[0].format(self=self)
-
     def __str__(self):
-        return self.getMesg()
+        return self.getMesg(self)
 
-class MissConfigurationError(ConfigError):
-    def __init__(self, msg: str):
-        super().__init__(msg)
+#class LogicError(ConfigError):
+ #   def __init__(self, msg: str, file_path: str):
+  #      super().__init__(msg)
 
 
-class LineError(ConfigError):
+class HyLineError(HyInitSyntaxError):
     _line: str
 
-    def __init__(self, line_no, line:str):
-        super().__init__(line_no)
+    def __init__(self, msg, line_no: int, line: str):
+        super().__init__(msg, line_no)
         self._line = line
     
     def __str__(self):
         return f""
 
-class LabelError(ConfigError):
-    def __init__(self, templ, label):
-        super().__init__(templ)
+class HyLabelError(HyInitSyntaxError):
+    def __init__(self, msg, label):
+        super().__init__(msg)
         self._label = label
 
     def suplLabel(self, label: str):
         self._label = label
 
 
-class ValError(LabelError):
-    def __init__(self, templ, val):
-        super().__init__(templ, None)
+class HyValueError(HyLabelError):
+    def __init__(self, msg, val):
+        super().__init__(msg, None)
         self._val = val
 
     #def __str__(self):
     #    return self.args[0]
 
 # Errors found for a single label
-class ValListError(ValError, ErrorList):
+class ValListError(HyValueError, ErrorList):
 # accept class LabelValueError
     def __init__(self):
         ErrorList.__init__(self)

@@ -5,8 +5,6 @@ Unit prototype class providing base functionality for unit configuration and val
 """
 from mpy_init.core.node_prototype import NodeSet, NodePrototype
 from mpy_init.core.unit import ExecUnit
-from mpy_init.lib.messages import LabelBaseErrorMsg
-from mpy_init.utils.parser_errors import MissConfigurationError, LabelError
 from mpy_init.utils.precheck import PreCheck
 
 

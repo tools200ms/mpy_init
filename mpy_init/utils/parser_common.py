@@ -1,5 +1,5 @@
-from mpy_init.lib.messages import ServiceErrorMsg
-from mpy_init.utils.parser_errors import ValError, ValListError
+
+from mpy_init.utils.parser_errors import ValListError
 from mpy_init.utils.precheck import PreCheck
 
 
