@@ -34,7 +34,7 @@ Project's testing bench is AlpineLinux, however, porting it to another Linux dis
 
 Implementation of these features into a project makes it to 
 
-## 'mpu_init' targets
+## 'mpy_init' targets
 
 `mpy_init` defines the following targets that are used to classify services by task and also determinate at what boot stage service is to be loaded. Below-defined targets and its scopes, targets are in order of actual boot: 
 
