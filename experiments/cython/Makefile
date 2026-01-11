@@ -1,6 +1,19 @@
 
+OUTPUT := hyinit-minic
 
-cython --embed hyinit-mini/__main__.py
-gcc -Os $(python3-config --cflags) hyinit-mini/__main__.c $(python3-config --ldflags --embed) -o hyinit-minic
+all: ${OUTPUT}
+compile: ${OUTPUT}
 
-hyinit-minic hyinit-mini/__main__.c
+${OUTPUT}:
+	mkdir -p build
+	cython --embed -3 hyinit-mini/__main__.py
+
+	gcc hyinit-mini/__main__.c \
+		$(shell python3-config --cflags) \
+		$(shell python3-config --ldflags --embed) \
+		-o build/${OUTPUT}
+
+    #hyinit-minic hyinit-mini/__main__.c
+
+clean:
+	rm hyinit-mini/*.c
