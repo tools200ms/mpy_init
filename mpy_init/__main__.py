@@ -1,6 +1,7 @@
 import os
 import sys
 
+import mpy_init
 from mpy_init.core.logger import Logger
 #import traceback
 
@@ -52,6 +53,7 @@ def main() -> int:
     Returns:
         int: Exit code (0 for success, non-zero for errors)
     """
+
     argv = sys.argv
 
     # if len(argv) < 2:
