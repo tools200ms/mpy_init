@@ -1,9 +1,9 @@
 
-PROJ_NAME := MPy Init
+PROJ_NAME := (wh)yInit
 
 SRC_DIR := ./mpy_init
 BLD_DIR := ./build
-OUTPUT := hyinit-minic
+OUTPUT := yinit
 
 CFLAGS := -fno-strict-overflow -Wsign-compare -O2 -Wall
 

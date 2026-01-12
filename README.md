@@ -1,4 +1,4 @@
-# 'mpy-init' – Unix init system developed in Python [Experimental code]
+# 'yInit' – Unix init system developed in Python [Experimental code]
 
 This is a Unix init system developed in Python. 
 
@@ -20,7 +20,7 @@ Project's testing bench is AlpineLinux, however, porting it to another Linux dis
 
 **MicroPython** - VM and modules, provide multiple functions making it a good base for building Init System but also more. Aim of this project is to use MicroPython potential as much as possible.
 
-1. **In between OpenRC and SystemD** – `mpy_init` goes beyond the scope of classic init systems like OpenRC and SysVinit – that are designed to handle service start/stop/monitoring while delegating tasks such as loginng, cron to specialized demons. `mpy_init` approaches SystemD philosophy; that is to provide also essential services, `mpy_init` handles: 
+1. **In between OpenRC and SystemD** – `yInit` goes beyond the scope of classic init systems like OpenRC and SysVinit – that are designed to handle service start/stop/monitoring while delegating tasks such as loginng, cron to specialized demons. `yInit` approaches SystemD philosophy; that is to provide also essential services, `yInit` handles: 
 
     a. **Time** – ensures OS runs with a correct time.
 
@@ -34,9 +34,9 @@ Project's testing bench is AlpineLinux, however, porting it to another Linux dis
 
 Implementation of these features into a project makes it to 
 
-## 'mpy_init' targets
+## 'yInit' targets
 
-`mpy_init` defines the following targets that are used to classify services by task and also determinate at what boot stage service is to be loaded. Below-defined targets and its scopes, targets are in order of actual boot: 
+`yInit` defines the following targets that are used to classify services by task and also determinate at what boot stage service is to be loaded. Below-defined targets and its scopes, targets are in order of actual boot: 
 
 1. **init** – does initializations of special filesystems: devfs, procfs, sysfs, 
 2. **launch** – cheks and mounts root and user filesystems, loads drivers, sets up hardware settings, launches logging capability
