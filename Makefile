@@ -31,6 +31,7 @@ compile2c:
 	mkdir -p ${BLD_DIR}
 	cython --embed -3 ${SRC_DIR}/entry.pyx -o ${BLD_DIR}
 	cython -3 ${SRC_DIR}/sys/__init__.pyx -o ${BLD_DIR}/sys
+	cython -3 ${SRC_DIR}/sys/about.pyx -o ${BLD_DIR}/sys
 
 	echo ${PYX_SRC}
 	echo ${C_SRC}

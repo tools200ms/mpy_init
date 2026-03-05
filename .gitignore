@@ -6,6 +6,12 @@ venv/
 .venv/
 .mpy_venv/
 
+*.c
+*.cpp
+*.o
+*.so
+*.pyd
+
 sandbox/pipes/*
 *.log
 *.mo
