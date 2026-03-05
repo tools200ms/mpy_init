@@ -8,33 +8,59 @@ This is a Unix init system developed in Python.
 > 
 > **A:**
 > 
-> Python in the form of **MicroPython** was successfully re-implemented to run on microcontrollers – small computers with very limited memory and CPU resources. 
+> Let's use Cython! 
 > 
 > Python is a flexible object-oriented language, great for expressing complexity – that Init System must deal with.
+> 
+> Currently, init systems go beyond simply being a launch platform. Tasks such as job scheduling, monitoring, log handling, reporting, remote control, and system integration are essential, regardless of whether the environment is a container or a bare-metal system.
 
-Project is developed with MicroPython limitations in mind (simplified modules and language API); therefore, it can be run on both - MicroPython and CPyhon.
+Python - and inherently Cython provides a vast diversity of modules that can be used to build: 
+- web control panel
+- hardware support of hardware such as mini-displays and keypards (via GPIO - on boards such as Raspberry Pi)
+- communication protocols for system integrations (via e.g. MQTT)
 
-Project's testing bench is AlpineLinux, however, porting it to another Linux distribution or unix system should be relatively straightforward.
+The concept is to develop an init system that handles administrative tasks and provides means for easy, and secure interactions.
 
-## Project (planned) features
+## 'yInit' target applications
+'yInit' aims to: 
+- Init systems for apps running in a containtes
+- Init system for bearmetal IoT servers
 
-**MicroPython** - VM and modules, provide multiple functions making it a good base for building Init System but also more. Aim of this project is to use MicroPython potential as much as possible.
+## yInit assumptions
 
-1. **In between OpenRC and SystemD** – `yInit` goes beyond the scope of classic init systems like OpenRC and SysVinit – that are designed to handle service start/stop/monitoring while delegating tasks such as loginng, cron to specialized demons. `yInit` approaches SystemD philosophy; that is to provide also essential services, `yInit` handles: 
+`yInit` goes beyond the scope of classic init systems like OpenRC and SysVinit – that are designed to handle service start/stop/monitoring while delegating tasks such as loginng, cron to specialized demons. 
 
-    a. **Time** – ensures OS runs with a correct time.
+### 'yInit' cover range
 
-    b. **Network** – ensures applications are capable of communication (necessary also for time synchronization).
+`yInit` approaches SystemD philosophy; that is to provide also essential services, `yInit` handles: 
 
-     c. **Periodic tasks** – provides cron functionality.
+1. **Time** – ensures OS runs with a correct time.
 
-     d. **SSD trimming** – Ensure partitions located on flash storage are mounted with a TRIM option, and/or periodic trims are enabled.
-2. **Parallel boot** – boot services in parallel (if no dependency bound).
-3. **Web API** – for initialization and management of machines over network.
+2. **Network** – ensures applications are capable of communication (necessary also for time synchronization).
 
-Implementation of these features into a project makes it to 
+3. **Periodic tasks** – provides cron functionality.
 
-## 'yInit' targets
+4. **SSD trimming** – Ensure partitions located on flash storage are mounted with a TRIM option, and/or periodic trims are enabled.
+
+### 'yInit' features (build-in services)
+
+'yInit' provides: 
+
+1. **Web Panel/API** – for initialization and management of machines over network.
+2. **min-Display & key-pad** support – for GPIO featured devices for easy-build servers for IoT.
+3. **integration** – for integrating witch other systems over MQTT.
+
+
+### 'yInit' options
+
+Planned 'yInit' options: 
+
+- **Parallel boot** – boot services in parallel (if no dependency bound).
+
+
+## Documentation
+
+### 'yInit' targets
 
 `yInit` defines the following targets that are used to classify services by task and also determinate at what boot stage service is to be loaded. Below-defined targets and its scopes, targets are in order of actual boot: 
 
@@ -44,9 +70,4 @@ Implementation of these features into a project makes it to
 4. **network.online** – brings up network services that require network access; fullfilling this target means that the machine is probably online
 5. **system** – starts system services such as SSH server
 6. **user** – runs user related services: login manager, task scheduler.
-
-# References
-
-- The MicroPython Project repository [link](https://github.com/micropython/micropython).
-- Micropython [APK BUILD](https://gitlab.alpinelinux.org/alpine/aports/-/tree/master/community/micropython)
 
