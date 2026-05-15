@@ -6,9 +6,11 @@ venv/
 .venv/
 .mpy_venv/
 
+# Cython C/C++ generated sources and compiled binaries
 *.c
 *.cpp
 *.o
+*.out
 *.so
 *.pyd
 

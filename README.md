@@ -1,4 +1,4 @@
-# 'yInit' – Unix init system developed in Python [Experimental code]
+# 'yInit' – Unix init system developed in Python
 
 This is a Unix init system developed in Python. 
 
