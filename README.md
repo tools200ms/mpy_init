@@ -1,6 +1,6 @@
 # 'yInit' – Unix init system developed in Python
 
-This is a Unix init system developed in Python. 
+This is (wh)YInit – Unix init system developed in Python. 
 
 > **Q:**
 > 
@@ -19,20 +19,14 @@ Python - and inherently Cython provides a vast diversity of modules that can be 
 - hardware support of hardware such as mini-displays and keypards (via GPIO - on boards such as Raspberry Pi)
 - communication protocols for system integrations (via e.g. MQTT)
 
-The concept is to develop an init system that handles administrative tasks and provides means for easy, and secure interactions.
+The goal is to develop a modern, feature-rich, and user-friendly init system for Unix that integrates with both **bare-metal** and **containerized** environments.
 
-## 'yInit' target applications
-'yInit' aims to: 
-- Init systems for apps running in a containtes
-- Init system for bearmetal IoT servers
+## YInit scope
 
-## yInit assumptions
+'YInit' goes beyond the scope of classic init systems like OpenRC and SysVinit – that are designed to handle service start/stop/monitoring while delegating tasks such as loginng, cron to specialized demons. 
 
-`yInit` goes beyond the scope of classic init systems like OpenRC and SysVinit – that are designed to handle service start/stop/monitoring while delegating tasks such as loginng, cron to specialized demons. 
-
-### 'yInit' cover range
-
-`yInit` approaches SystemD philosophy; that is to provide also essential services, `yInit` handles: 
+`yInit` approaches SystemD philosophy; that is to provid essential services in the form of modules, what simplifies configuration. 
+`yInit` handles: 
 
 1. **Time** – ensures OS runs with a correct time.
 
