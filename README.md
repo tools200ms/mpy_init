@@ -23,34 +23,30 @@ The goal is to develop a modern, feature-rich, and user-friendly init system for
 
 ## YInit scope
 
-'YInit' goes beyond the scope of classic init systems like OpenRC and SysVinit – that are designed to handle service start/stop/monitoring while delegating tasks such as loginng, cron to specialized demons. 
+'YInit' goes beyond the scope of a key Init System functinality that is: 'start/stop & monitor' services.
 
-`yInit` approaches SystemD philosophy; that is to provid essential services in the form of modules, what simplifies configuration. 
-`yInit` handles: 
+It provides the following functinalities: 
 
-1. **Time** – ensures OS runs with a correct time.
+**For all setyups (bare-metal & container VMs):**
+1. **Periodic tasks** – Provides cron functionality.
+2. **Web-configurator & REST API** – Administrative module for managing configuration over web/api.
+3. **MQTT and mDNS** – 'YInit' advertises it's IP using mDNS and provides MQTT for monitoring.
 
-2. **Network** – ensures applications are capable of communication (necessary also for time synchronization).
+**For bare-metal setups:**
+2. **Time** – Ensures OS runs with a correct time.
 
-3. **Periodic tasks** – provides cron functionality.
+3. **Network** – Ensures applications are capable of communication (necessary also for a time synchronization).
 
 4. **SSD trimming** – Ensure partitions located on flash storage are mounted with a TRIM option, and/or periodic trims are enabled.
 
-### 'yInit' features (build-in services)
-
-'yInit' provides: 
-
-1. **Web Panel/API** – for initialization and management of machines over network.
-2. **min-Display & key-pad** support – for GPIO featured devices for easy-build servers for IoT.
-3. **integration** – for integrating witch other systems over MQTT.
+5. **Hardware support** – GPIO support to provide: display and keypad interface (for a selected hardware).
 
 
-### 'yInit' options
+### 'yInit' features
 
-Planned 'yInit' options: 
+Planned 'yInit' feature: 
 
 - **Parallel boot** – boot services in parallel (if no dependency bound).
-
 
 ## Documentation
 
