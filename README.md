@@ -8,7 +8,7 @@ This is (wh)YInit – Unix init system developed in Python.
 > 
 > **A:**
 > 
-> Let's use Cython! 
+> Let's use **Cython!** 
 > 
 > Python is a flexible object-oriented language, great for expressing complexity – that Init System must deal with.
 > 
@@ -19,27 +19,34 @@ Python - and inherently Cython provides a vast diversity of modules that can be 
 - hardware support of hardware such as mini-displays and keypards (via GPIO - on boards such as Raspberry Pi)
 - communication protocols for system integrations (via e.g. MQTT)
 
-The goal is to develop a modern, feature-rich, and user-friendly init system for Unix that integrates with both **bare-metal** and **containerized** environments.
+The goal is to develop a modern, feature-rich, and intuitive init system for Unix that integrates with both **bare-metal** and **containerized** environments.
 
-## YInit scope
+## Flexibility
 
-'YInit' goes beyond the scope of a key Init System functinality that is: 'start/stop & monitor' services.
+`YInit` can work as Cython compiled binary, or be launched in Python VM.
 
-It provides the following functinalities: 
+The first approach is actually the must for running fully flagged init system in an efficient way. 'Python VM' mode is designated for deploying Python projects that run in containers.
 
-**For all setyups (bare-metal & container VMs):**
-1. **Periodic tasks** – Provides cron functionality.
-2. **Web-configurator & REST API** – Administrative module for managing configuration over web/api.
-3. **MQTT and mDNS** – 'YInit' advertises it's IP using mDNS and provides MQTT for monitoring.
+### Bare-metal
 
 **For bare-metal setups:**
 2. **Time** – Ensures OS runs with a correct time.
-
 3. **Network** – Ensures applications are capable of communication (necessary also for a time synchronization).
+4. **mDNS** – 'YInit' advertises it's IP using mDNS and provides MQTT for monitoring.
+5. **SSD trimming** – Ensure partitions located on flash storage are mounted with a TRIM option, and/or periodic trims are enabled.
+5. **GPIO support** – GPIO support to provide: display and keypad interface (for a selected hardware).
 
-4. **SSD trimming** – Ensure partitions located on flash storage are mounted with a TRIM option, and/or periodic trims are enabled.
+### Python modules
+It provides the following modules: 
 
-5. **Hardware support** – GPIO support to provide: display and keypad interface (for a selected hardware).
+**For all setups (bare-metal & container VMs):**
+1. **Task scheduler** – Provides cron functionality.
+2. **Log handling** – 
+3. **Web-configurator & REST API** – Administrative module for managing configuration over web/api.
+4. **Messaging [e-mail, MQTT]** – 
+5. Exception handling and automatic restarts of services
+
+It can be thought as the platform for launching Python projects.
 
 
 ### 'yInit' features
