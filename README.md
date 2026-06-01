@@ -1,6 +1,6 @@
 # 'yInit' – Unix init system developed in Python
 
-This is (wh)YInit – Unix init system developed in Python. 
+This is YInit – Unix init system developed in Python. 
 
 > **Q:**
 > 
@@ -12,20 +12,23 @@ This is (wh)YInit – Unix init system developed in Python.
 > 
 > Python is a flexible object-oriented language, great for expressing complexity – that Init System must deal with.
 > 
-> Currently, init systems go beyond simply being a launch platform. Tasks such as job scheduling, monitoring, log handling, reporting, remote control, and system integration are essential, regardless of whether the environment is a container or a bare-metal system.
+> Currently, init systems scope goes beyond simply being a service start/stop supervisors. Tasks such as job scheduling, monitoring and log handling are essential. Python - and inherently Cython comes with a solid module base that can be used by the init system.
 
-Python - and inherently Cython provides a vast diversity of modules that can be used to build: 
-- web control panel
-- hardware support of hardware such as mini-displays and keypards (via GPIO - on boards such as Raspberry Pi)
-- communication protocols for system integrations (via e.g. MQTT)
+The goal is to develop init system for Unix that provides flexibility to scaledown to be run in **contenerized enviroment [see 'Flexibility' section]**.
 
-The goal is to develop a modern, feature-rich, and intuitive init system for Unix that integrates with both **bare-metal** and **containerized** environments.
+Moreover, Python is well-known form GPIO projects, see [README-raspberrypi.md](README-raspberrypi.md) to check out how `YInit` might be integrated with 
+bare-metal hardware!
 
 ## Flexibility
 
 `YInit` can work as Cython compiled binary, or be launched in Python VM.
 
-The first approach is actually the must for running fully flagged init system in an efficient way. 'Python VM' mode is designated for deploying Python projects that run in containers.
+The first approach is actually the must for running fully flagged init system in an efficient way. But, 'Python VM' mode is designated for deploying Python projects that run in containers.
+
+Simply speaking, init system that runs in a container reuiers just a subset of features (host OS provides the rest). By developing project in Python YInit can work as a platform for deploing Python projects in containers.
+
+### Enviroments
+Containerized enviroment is a subset of bare-metal 
 
 ### Bare-metal
 
