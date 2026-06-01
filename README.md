@@ -12,18 +12,42 @@ This is YInit – Unix init system developed in Python.
 > 
 > Python is a flexible object-oriented language, great for expressing complexity – that Init System must deal with.
 > 
-> Currently, init systems scope goes beyond simply being a service start/stop supervisors. Tasks such as job scheduling, monitoring and log handling are essential. Python - and inherently Cython comes with a solid module base that can be used by the init system.
+> Currently, init system's scope goes beyond of simply being a service start/stop supervisor. Tasks such as job scheduling, monitoring and log handling are essential. Python - and inherently Cython comes with a solid module base that can be used for these tasks.
 
-The goal is to develop init system for Unix that provides flexibility to scaledown to be run in **contenerized enviroment [see 'Flexibility' section]**.
+The goal is to develop Python init system for Linux and BSD systems that also provides capabilities to support deployment pipelines for Python projects.
 
 Moreover, Python is well-known form GPIO projects, see [README-raspberrypi.md](README-raspberrypi.md) to check out how `YInit` might be integrated with 
-bare-metal hardware!
+a bare-metal hardware!
 
 ## Flexibility
 
-`YInit` can work as Cython compiled binary, or be launched in Python VM.
+1. `YInit` can work as **Cython compiled binary**, or be launched in **Python VM**.
 
-The first approach is actually the must for running fully flagged init system in an efficient way. But, 'Python VM' mode is designated for deploying Python projects that run in containers.
+2. `YInit` is split into:
+   - Host OS services
+   - Service facilities
+   - User services
+
+### Host OS services
+Host OS services are the services necessary to prepare an enviroent for running user applications.
+This includes filesystems check and mounting, setting host name, hardware clock etc..
+
+This are the first services to be run while running `YInit` on bare-metal or virtual machine.
+
+### Service facilities
+These are `YInit` functions that provide: 
+- Monitoring and scheduling
+- Logging
+- Configuration provider
+- Messaging
+
+Any sevice, regardless if it's running binary such as SSH server, or Python Project run in VM requiers above 4 factors, more details in [WIKI](...).
+
+### User services
+
+In `YInit` user services are programs that directly provide functions requied by user.
+
+**Python VM** mode is designated for deploying Python projects that run in containers.
 
 Simply speaking, init system that runs in a container reuiers just a subset of features (host OS provides the rest). By developing project in Python YInit can work as a platform for deploing Python projects in containers.
 
