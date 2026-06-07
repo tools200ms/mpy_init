@@ -1,6 +1,7 @@
 
 description = BusyBox NTP daemon
 
+wants = host
 requires = network
 
 # Service defined targets:

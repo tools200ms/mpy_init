@@ -16,8 +16,7 @@ This is YInit – Unix init system developed in Python.
 
 The goal is to develop Python init system for Linux and BSD systems that also provides capabilities to support deployment pipelines for Python projects.
 
-Moreover, Python is well-known form GPIO projects, see [README-raspberrypi.md](README-raspberrypi.md) to check out how `YInit` might be integrated with 
-a bare-metal hardware!
+Moreover, Python is well-known form GPIO projects, see [README-raspberrypi.md](README-raspberrypi.md) to check out how `YInit` might be integrated with a bare-metal hardware!
 
 ## Flexibility
 
@@ -25,14 +24,18 @@ a bare-metal hardware!
 
 2. `YInit` is split into:
    - Host OS services
-   - Service facilities
+   - Init facilities
+   - Network services
    - User services
 
-### Host OS services
-Host OS services are the services necessary to prepare an enviroent for running user applications.
-This includes filesystems check and mounting, setting host name, hardware clock etc..
+### Host OS services (init)
+Host OS services are the basic services that provide: 
 
-This are the first services to be run while running `YInit` on bare-metal or virtual machine.
+- root fileststem check and mounting
+- provides special fileystems: `/dev`, `/sys`, `/pro`c
+- device initialization and drivers
+
+These are the services to be run while running `YInit` on bare-metal or in virtual machine.
 
 ### Service facilities
 These are `YInit` functions that provide: 
