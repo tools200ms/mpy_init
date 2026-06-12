@@ -23,12 +23,14 @@ Moreover, Python is well-known form GPIO projects, see [README-raspberrypi.md](R
 1. `YInit` can work as **Cython compiled binary**, or be launched in **Python VM**.
 
 2. `YInit` is split into:
-   - Host OS services
-   - Init facilities
-   - Network services
-   - User services
+   - Host OS services - Everything that is requied by bare-metal or VM.
+   - Init facilities - Services provided by Python
+   - Network services - User services that interact with network sockets
+   - User services - 
 
 ### Host OS services (init)
+
+
 Host OS services are the basic services that provide: 
 
 - root fileststem check and mounting
@@ -71,7 +73,7 @@ It provides the following modules:
 
 **For all setups (bare-metal & container VMs):**
 1. **Task scheduler** – Provides cron functionality.
-2. **Log handling** – 
+2. **Log handler** – 
 3. **Web-configurator & REST API** – Administrative module for managing configuration over web/api.
 4. **Messaging [e-mail, MQTT]** – 
 5. Exception handling and automatic restarts of services
