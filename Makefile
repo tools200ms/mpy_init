@@ -7,6 +7,9 @@ OUTPUT := yinit-bin
 
 CFLAGS := -fno-strict-overflow -Wsign-compare -O2 -Wall
 
+PY_INC = $(shell python3-config --cflags)
+PY_LIB = $(shell python3-config --ldflags)
+
 #PYX_SRC := ${wildcard $(SRC_DIR)/*.pyx}
 PYX_SRC := $(shell find ${SRC_DIR} -name '*.py')
 C_SRC := $(patsubst $(SRC_DIR)%.py, $(BLD_DIR)%.c, $(PYX_SRC))
@@ -30,9 +33,10 @@ all: ${OUTPUT}
 compile2c:
 	mkdir -p ${BLD_DIR}/yinit
 
-	cython --embed -3 ${SRC_DIR}/yinit/__main__.py -o ${BLD_DIR}/yinit
-	cython -3 ${SRC_DIR}/yinit/__init__.py -o ${BLD_DIR}/yinit
-	cython -3 ${SRC_DIR}/yinit/about.py -o ${BLD_DIR}/yinit
+	cython --embed -3 \
+	    ${SRC_DIR}/yinit/main.py \
+	    -o ${BLD_DIR}/yinit/main.c
+# cython -3 ${SRC_DIR}/yinit/about.py -o ${BLD_DIR}/yinit
 
 	echo ${PYX_SRC}
 	echo ${C_SRC}
@@ -41,11 +45,15 @@ compile2c:
 compilecc:
 	gcc ${CFLAGS} \
 		$(shell python3-config --includes) \
-		${C_SRC} \
+		${BLD_DIR}/yinit/main.c \
 		$(shell python3-config --ldflags --embed) \
 		-o ${BLD_DIR}/${OUTPUT}
 
-    #hyinit-minic hyinit-mini/__main__.c
+# 	gcc ${CFLAGS} ${PY_INC} \
+# 		${BLD_DIR}/yinit/main.c \
+# 		${PY_LIB} \
+# 		-o ${BLD_DIR}/${OUTPUT}
+
 
 compile: compile2c compilecc
 

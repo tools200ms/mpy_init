@@ -1,12 +1,21 @@
-[tool.poetry]
+[build-system]
+requires = [
+    "setuptools>=68",
+    "wheel",
+    "cython>=3.0"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
 name = "yinit"
 version = "0.1.0"
 description = "Unix init system developed in Python"
 authors = ["Mateusz Piwek <mp@200ms.net>"]
-package-mode = false
+requires-python = ">=3.9"
 
-[tool.poetry.dependencies]
-python = "^3.12"
 
-[tool.poetry.group.dev.dependencies]
-pydevd-pycharm = "~252.27397.106"
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
