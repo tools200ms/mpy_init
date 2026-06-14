@@ -1,15 +1,15 @@
 
-PROJ_NAME := (wh)yInit
+PROJ_NAME := YInit
 
-SRC_DIR := ./mpy_init
+SRC_DIR := ./src
 BLD_DIR := ./build
-OUTPUT := yinit
+OUTPUT := yinit-bin
 
 CFLAGS := -fno-strict-overflow -Wsign-compare -O2 -Wall
 
 #PYX_SRC := ${wildcard $(SRC_DIR)/*.pyx}
-PYX_SRC := $(shell find ${SRC_DIR} -name '*.pyx')
-C_SRC := $(patsubst $(SRC_DIR)%.pyx, $(BLD_DIR)%.c, $(PYX_SRC))
+PYX_SRC := $(shell find ${SRC_DIR} -name '*.py')
+C_SRC := $(patsubst $(SRC_DIR)%.py, $(BLD_DIR)%.c, $(PYX_SRC))
 
 
 ifdef DEBUG
@@ -28,10 +28,11 @@ endif
 all: ${OUTPUT}
 
 compile2c:
-	mkdir -p ${BLD_DIR}
-	cython --embed -3 ${SRC_DIR}/entry.pyx -o ${BLD_DIR}
-	cython -3 ${SRC_DIR}/sys/__init__.pyx -o ${BLD_DIR}/sys
-	cython -3 ${SRC_DIR}/sys/about.pyx -o ${BLD_DIR}/sys
+	mkdir -p ${BLD_DIR}/yinit
+
+	cython --embed -3 ${SRC_DIR}/yinit/__main__.py -o ${BLD_DIR}/yinit
+	cython -3 ${SRC_DIR}/yinit/__init__.py -o ${BLD_DIR}/yinit
+	cython -3 ${SRC_DIR}/yinit/about.py -o ${BLD_DIR}/yinit
 
 	echo ${PYX_SRC}
 	echo ${C_SRC}

@@ -13,6 +13,6 @@ if not os.path.isdir(path):
 
 sys.path.insert(0, path)
 
-from mpy_init.__main__ import main
+from yinit.__main__ import main
 
 main()

@@ -2,7 +2,7 @@ import sys
 
 class Impl():
 
-    class MICROPYTHON():
+    class MICROPYTHON:
         def __init__(self):
             pass
 
@@ -16,20 +16,22 @@ class Impl():
         def __str__(self):
             return "CPython"
 
-    all_supported = (MICROPYTHON, CPYTHON)
+    supported = (MICROPYTHON, CPYTHON)
 
     @classmethod
     def chk(cls):
         impl_name = sys.implementation.name.upper()
 
-        if not hasattr(cls, impl_name):
-            raise Exception(f"Unsupported Python implementation: {impl_name}")
+        impl_cls = next(
+            (impl for impl in cls.supported if impl.__name__ == impl_name),
+            None,
+        )
 
-        impl =  getattr(cls, impl_name)()
-        setattr(impl, 'all_supported', cls.all_supported)
+        if impl_cls is None:
+            raise Exception(f"Unsupported Python implementation: {sys.implementation.name}")
 
-        for supported in cls.all_supported:
-            setattr(impl, supported.__name__, supported)
+        impl = impl_cls()
+        setattr(impl, "supported", cls.supported)
 
         delattr(cls, 'chk') # After that this function should be removed by GC
         return impl

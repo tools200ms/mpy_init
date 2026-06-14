@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "mpy_init"
+name = "yinit"
 version = "0.1.0"
-description = "MicroPython Unix Init System"
+description = "Unix init system developed in Python"
 authors = ["Mateusz Piwek <mp@200ms.net>"]
 package-mode = false
 
