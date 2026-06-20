@@ -30,22 +30,25 @@ endif
 
 all: ${OUTPUT}
 
-compile2c:
+cythonize:
 	mkdir -p ${BLD_DIR}/yinit
 
 	cython --embed -3 \
 	    ${SRC_DIR}/yinit/main.py \
 	    -o ${BLD_DIR}/yinit/main.c
-# cython -3 ${SRC_DIR}/yinit/about.py -o ${BLD_DIR}/yinit
+	cython -3 ${SRC_DIR}/yinit/runenv.py \
+	    --module-name yinit \
+	    -o ${BLD_DIR}/yinit
 
 	echo ${PYX_SRC}
 	echo ${C_SRC}
 
 # Final compilation
-compilecc:
+compile:
 	gcc ${CFLAGS} \
 		$(shell python3-config --includes) \
 		${BLD_DIR}/yinit/main.c \
+		${BLD_DIR}/yinit/runenv.c \
 		$(shell python3-config --ldflags --embed) \
 		-o ${BLD_DIR}/${OUTPUT}
 
@@ -54,10 +57,10 @@ compilecc:
 # 		${PY_LIB} \
 # 		-o ${BLD_DIR}/${OUTPUT}
 
+${OUTPUT}: cythonize compile
 
-compile: compile2c compilecc
-
-${OUTPUT}: compile
+runinpython:
+	cd src && python -m yinit ${ARGS}
 
 clean:
 	rm -f 	${C_SRC} \

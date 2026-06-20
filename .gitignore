@@ -4,7 +4,7 @@ build/
 dist/
 venv/
 .venv/
-.mpy_venv/
+src/*.egg-info/
 
 # Cython C/C++ generated sources and compiled binaries
 *.c
