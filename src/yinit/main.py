@@ -3,7 +3,7 @@
 # __package__ = "yinit"
 # __name__ = __package__ + ".__main__"
 import sys
-import yinit.runenv as runenv
+#import yinit.runenv as runenv
 
 def main():
     if len(sys.argv) < 2:
@@ -11,13 +11,14 @@ def main():
          return 1
 
     print(f"Hello, {sys.argv[1]}!")
-    print(runenv.Impl)
+    #print(runenv.Impl)
 
     return 0
 
 
 print(__name__)      # module name
 print(__package__)   # package name
+print(sys.path)
 
 if __name__ == "__main__":
     main()

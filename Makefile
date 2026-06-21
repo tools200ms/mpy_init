@@ -33,12 +33,15 @@ all: ${OUTPUT}
 cythonize:
 	mkdir -p ${BLD_DIR}/yinit
 
-	cython --embed -3 \
-	    ${SRC_DIR}/yinit/main.py \
-	    -o ${BLD_DIR}/yinit/main.c
-	cython -3 ${SRC_DIR}/yinit/runenv.py \
-	    --module-name yinit \
-	    -o ${BLD_DIR}/yinit
+	cython --embed -3 -w ${SRC_DIR} \
+	    launcher.py \
+	    -o ../${BLD_DIR}/launcher.c
+	cython -3 -w ${SRC_DIR} \
+	    yinit/main.py \
+	    -o ../${BLD_DIR}/yinit/main.c
+	cython -3 -w ${SRC_DIR} \
+	    yinit/runenv.py \
+	    -o ../${BLD_DIR}/yinit
 
 	echo ${PYX_SRC}
 	echo ${C_SRC}
@@ -47,6 +50,7 @@ cythonize:
 compile:
 	gcc ${CFLAGS} \
 		$(shell python3-config --includes) \
+		${BLD_DIR}/launcher.c \
 		${BLD_DIR}/yinit/main.c \
 		${BLD_DIR}/yinit/runenv.c \
 		$(shell python3-config --ldflags --embed) \
