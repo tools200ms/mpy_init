@@ -6,18 +6,18 @@ options = {"compiler_directives": {"language_level": "3"}}
 
 extensions = [
     Extension(
-        "yinit.main",
-        ["src/yinit/main.py"],
+    "yinit.main",
+    ["yinit/main.py"],
     ),
     Extension(
-        "yinit.runenv",
-        ["src/yinit/runenv.py"],
+    "yinit.runenv",
+    ["yinit/runenv.py"],
     )
 ]
 
-setup(
-    name="yinit",
-    ext_modules=cythonize(extensions, **options),
-    package_dir={"": "src"},
-    packages=["yinit"],
-)
+# setup(
+#     name="yinit",
+#     ext_modules=cythonize(extensions, language_level = 3),
+#     package_dir={"": "src"},
+#     packages=["yinit"],
+# )
