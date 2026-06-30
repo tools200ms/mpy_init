@@ -1,4 +1,9 @@
+# How to build and run YInit
 
+To build project run: 
+```bash
 python -m build .
+```
 
-dist
+This will place compiled packages in `./dist` directory.
+
