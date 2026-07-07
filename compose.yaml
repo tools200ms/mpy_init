@@ -1,5 +1,19 @@
 
 services:
+  debian:
+    image: debian
+    volumes:
+      - ./Makefile:/usr/src/yinit/Makefile
+      - ./src/:/usr/src/yinit/src
+    command: "sh -c 'apt update && apt install -y cython3 make'"
+    entrypoint: ["/bin/sh", "-c", "sleep infinity"]
+    network_mode: host
+    environment:
+      DBG_SERVER: "127.0.0.1:5678"
+    cap_add: ['ALL']
+    devices:
+      - /dev/fuse
+
   sandbox:
     build:
       context: sandbox
