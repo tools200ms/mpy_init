@@ -35,13 +35,23 @@ cythonize:
 
 	cython --embed -3 -w ${SRC_DIR} \
 	    launcher.py \
+	    --embed-modules yinit,main,runenv \
 	    -o ../${BLD_DIR}/launcher.c
+
+	#cython -3 -w ${SRC_DIR} \
+	#	--module-name 'yinit' \
+	#	yinit/__init__.py \
+	#	-o ../${BLD_DIR}/yinit/init.c
+
 	cython -3 -w ${SRC_DIR} \
+	    --module-name 'yinit.main' \
 	    yinit/main.py \
 	    -o ../${BLD_DIR}/yinit/main.c
+
 	cython -3 -w ${SRC_DIR} \
+	     --module-name 'yinit.runenv' \
 	    yinit/runenv.py \
-	    -o ../${BLD_DIR}/yinit
+	    -o ../${BLD_DIR}/yinit/runenv.c
 
 	echo ${PYX_SRC}
 	echo ${C_SRC}
@@ -50,9 +60,25 @@ cythonize:
 compile:
 	gcc ${CFLAGS} \
 		$(shell python3-config --includes) \
+		-c ${BLD_DIR}/yinit/init.c \
+		-o ${BLD_DIR}/yinit/init.o
+
+	gcc ${CFLAGS} \
+		$(shell python3-config --includes) \
+		-c ${BLD_DIR}/yinit/main.c \
+		-o ${BLD_DIR}/yinit/main.o
+
+	gcc ${CFLAGS} \
+		$(shell python3-config --includes) \
+		-c ${BLD_DIR}/yinit/runenv.c \
+		-o ${BLD_DIR}/yinit/runenv.o
+
+	gcc ${CFLAGS} \
+		$(shell python3-config --includes) \
 		${BLD_DIR}/launcher.c \
-		${BLD_DIR}/yinit/main.c \
-		${BLD_DIR}/yinit/runenv.c \
+		${BLD_DIR}/yinit/init.o \
+		${BLD_DIR}/yinit/main.o \
+		${BLD_DIR}/yinit/runenv.o \
 		$(shell python3-config --ldflags --embed) \
 		-o ${BLD_DIR}/${OUTPUT}
 

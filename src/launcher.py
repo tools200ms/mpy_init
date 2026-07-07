@@ -1,7 +1,9 @@
 import sys
 print(sys.path)
 
-from yinit import main
+from yinit import *
+from main import run
 
 if __name__ == "__main__":
-    main.main()
+    print(set(dir()))
+    run()
