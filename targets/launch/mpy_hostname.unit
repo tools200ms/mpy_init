@@ -4,4 +4,4 @@ description = Set hostname
 provides = launch
 
 # process control
-mpy_package = hostname
+py_module = hostname
