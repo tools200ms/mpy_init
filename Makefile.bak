@@ -1,0 +1,92 @@
+
+PROJ_NAME := YInit
+
+SRC_DIR := ./src
+BLD_DIR := ./build
+OUTPUT := yinit-bin
+MODULE := yinit
+
+CFLAGS := -fno-strict-overflow -Wsign-compare -O2 -Wall
+
+PY_INC = $(shell python3-config --cflags)
+PY_LIB = $(shell python3-config --ldflags)
+
+PY_SRC := $(shell find ${SRC_DIR}/${MODULE} -name '*.py' --except 'init.py' | grep -ve '__.*__\.py')
+C_SRC := $(patsubst $(PY_SRC)%.py, $(BLD_DIR)%.c, $(PY_SRC))
+OBJS := $(patsubst $(PY_SRC)%.py, $(BLD_DIR)%.o, $(PYX_SRC))
+
+
+ifdef DEBUG
+$(info ---=== DEBUG mode is ON: Compiling with debug flags. ===---)
+
+ifeq ("${DEBUG}","y")
+	CFLAGS += -g1
+else ifeq ("${DEBUG}","Y")
+	CFLAGS += -g3
+endif
+# TODO: if ${DEBUG}: 0-3 add appropriate level
+else
+CFLAGS += -DNDEBUG -g
+endif
+
+all: ${OUTPUT}
+
+cythonize:
+	mkdir -p ${BLD_DIR}/yinit
+
+	cython --embed -3 -w ${SRC_DIR} \
+	    launcher.py \
+	    --embed-modules 'main,runenv' \
+	    -o ../${BLD_DIR}/launcher.c
+
+	#cython -3 -w ${SRC_DIR} \
+	#	--module-name 'yinit' \
+	#	yinit/__init__.py \
+	#	-o ../${BLD_DIR}/yinit/init.c
+
+	cython -3 -w ${SRC_DIR} \
+	    --module-name 'yinit.main' \
+	    yinit/main.py \
+	    -o ../${BLD_DIR}/yinit/main.c
+
+	cython -3 -w ${SRC_DIR} \
+	     --module-name 'yinit.runenv' \
+	    yinit/runenv.py \
+	    -o ../${BLD_DIR}/yinit/runenv.c
+
+
+# Final compilation
+compile:
+	#gcc ${CFLAGS} \
+	#	$(shell python3-config --includes) \
+	#	-c ${BLD_DIR}/yinit/init.c \
+	#	-o ${BLD_DIR}/yinit/init.o
+
+	gcc ${CFLAGS} \
+		$(shell python3-config --includes) \
+		-c ${BLD_DIR}/yinit/main.c \
+		-o ${BLD_DIR}/yinit/main.o
+
+	gcc ${CFLAGS} \
+		$(shell python3-config --includes) \
+		-c ${BLD_DIR}/yinit/runenv.c \
+		-o ${BLD_DIR}/yinit/runenv.o
+
+	gcc ${CFLAGS} \
+		$(shell python3-config --includes) \
+		${BLD_DIR}/launcher.c \
+		${BLD_DIR}/yinit/main.o \
+		${BLD_DIR}/yinit/runenv.o \
+		$(shell python3-config --ldflags --embed) \
+		-o ${BLD_DIR}/${OUTPUT}
+
+
+${OUTPUT}: cythonize compile
+
+cpyrun:
+	cd src && python -m yinit ${ARGS}
+
+clean:
+	rm -f 	${C_SRC} \
+			${BLD_DIR}/${OUTPUT}
+# DO NOT DELETE

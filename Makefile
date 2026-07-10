@@ -4,15 +4,24 @@ PROJ_NAME := YInit
 SRC_DIR := ./src
 BLD_DIR := ./build
 OUTPUT := yinit-bin
+MODULE := yinit
+ENTRY_POINT := launcher.py
 
 CFLAGS := -fno-strict-overflow -Wsign-compare -O2 -Wall
+PY_CFLAGS = $(shell python3-config --cflags)
 
-PY_INC = $(shell python3-config --cflags)
+PY_INCLUDES := $(shell python3-config --includes)
+
 PY_LIB = $(shell python3-config --ldflags)
 
-#PYX_SRC := ${wildcard $(SRC_DIR)/*.pyx}
-PYX_SRC := $(shell find ${SRC_DIR} -name '*.py')
-C_SRC := $(patsubst $(SRC_DIR)%.py, $(BLD_DIR)%.c, $(PYX_SRC))
+PY_FILES := $(shell find ${SRC_DIR}/${MODULE} -name '*.py' | grep -ve '__.*__\.py')
+PY_SRC := $(patsubst ${SRC_DIR}/%, %, ${PY_FILES})
+C_SRC := $(patsubst ${SRC_DIR}/%.py, ${BLD_DIR}/%.c, ${PY_FILES})
+OBJS := $(patsubst %.c, %.o, ${C_SRC})
+
+MOD_NAMES := $(patsubst ${SRC_DIR}/%.py, %, ${PY_FILES} | tr '/' '.')
+
+ENTRY_POINT_C := $(patsubst %.py,%.c, ${ENTRY_POINT})
 
 
 ifdef DEBUG
@@ -34,64 +43,34 @@ cythonize:
 	mkdir -p ${BLD_DIR}/yinit
 
 	cython --embed -3 -w ${SRC_DIR} \
-	    launcher.py \
+	    ${ENTRY_POINT} \
 	    --embed-modules 'main,runenv' \
 	    -o ../${BLD_DIR}/launcher.c
 
-	cython -3 -w ${SRC_DIR} \
-		--module-name 'yinit' \
-		yinit/__init__.py \
-		-o ../${BLD_DIR}/yinit/init.c
+	$(foreach mod_file,${PY_SRC}, \
+		cython -3 -w ${SRC_DIR} ${mod_file} -o $(patsubst %.py, ../${BLD_DIR}/%.c, ${mod_file});)
 
-	cython -3 -w ${SRC_DIR} \
-	    --module-name 'yinit.main' \
-	    yinit/main.py \
-	    -o ../${BLD_DIR}/yinit/main.c
-
-	cython -3 -w ${SRC_DIR} \
-	     --module-name 'yinit.runenv' \
-	    yinit/runenv.py \
-	    -o ../${BLD_DIR}/yinit/runenv.c
-
-	echo ${PYX_SRC}
-	echo ${C_SRC}
 
 # Final compilation
 compile:
-	gcc ${CFLAGS} \
-		$(shell python3-config --includes) \
-		-c ${BLD_DIR}/yinit/init.c \
-		-o ${BLD_DIR}/yinit/init.o
 
-	gcc ${CFLAGS} \
-		$(shell python3-config --includes) \
-		-c ${BLD_DIR}/yinit/main.c \
-		-o ${BLD_DIR}/yinit/main.o
+	$(foreach mod_file,${PY_SRC}, \
+		gcc ${CFLAGS} ${PY_INCLUDES} -c ${BLD_DIR}/$(patsubst %.py,%.c, ${mod_file}) -o ${BLD_DIR}/$(patsubst %.py,%.o, ${mod_file});)
 
-	gcc ${CFLAGS} \
-		$(shell python3-config --includes) \
-		-c ${BLD_DIR}/yinit/runenv.c \
-		-o ${BLD_DIR}/yinit/runenv.o
 
-	gcc ${CFLAGS} \
-		$(shell python3-config --includes) \
-		${BLD_DIR}/launcher.c \
-		${BLD_DIR}/yinit/init.o \
-		${BLD_DIR}/yinit/main.o \
-		${BLD_DIR}/yinit/runenv.o \
+	gcc ${CFLAGS} ${PY_INCLUDES} \
+		${BLD_DIR}/${ENTRY_POINT_C} \
+		$(patsubst %.py, ${BLD_DIR}/%.o, ${PY_SRC}) \
 		$(shell python3-config --ldflags --embed) \
 		-o ${BLD_DIR}/${OUTPUT}
 
-# 	gcc ${CFLAGS} ${PY_INC} \
-# 		${BLD_DIR}/yinit/main.c \
-# 		${PY_LIB} \
-# 		-o ${BLD_DIR}/${OUTPUT}
 
 ${OUTPUT}: cythonize compile
 
-runinpython:
+cpyrun:
 	cd src && python -m yinit ${ARGS}
 
 clean:
-	rm -f 	${C_SRC} \
+	rm -f 	${C_SRC} ${OBJS} \
 			${BLD_DIR}/${OUTPUT}
+
