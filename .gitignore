@@ -13,6 +13,7 @@ src/*.egg-info/
 *.out
 *.so
 *.pyd
+*.lock
 
 sandbox/pipes/*
 *.log
