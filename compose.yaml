@@ -5,6 +5,7 @@ services:
     volumes:
       - ./Makefile:/usr/src/yinit/Makefile
       - ./src/:/usr/src/yinit/src
+      - ./targets:/etc/yinit/targets:ro
     command: "sh -c 'apt update && apt install -y cython3 make'"
     entrypoint: ["/bin/sh", "-c", "sleep infinity"]
     network_mode: host
@@ -19,7 +20,8 @@ services:
     volumes:
       - ./Makefile:/usr/src/yinit/Makefile
       - ./src/:/usr/src/yinit/src
-    command: "/bin/sh -c 'apk update && apk add cython gcc make musl-dev python3-dev'"
+      - ./targets:/etc/yinit/targets:ro
+      command: "/bin/sh -c 'apk update && apk add cython gcc make musl-dev python3-dev'"
     entrypoint: ["/bin/sh", "-c", "sleep infinity"]
     network_mode: host
     environment:

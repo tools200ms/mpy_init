@@ -14,9 +14,4 @@ make
 Compiled binary is in `./build/yinit-bin`.
 
 
-```bash
-python -m build .
-```
-
-This will place compiled packages in `./dist` directory.
 
