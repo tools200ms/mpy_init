@@ -3,11 +3,16 @@ services:
   debian:
     image: debian
     volumes:
-      - ./Makefile:/usr/src/yinit/Makefile
+      - ./Makefile:/usr/src/yinit/Makefile:ro
+      - ./pyproject.toml:/usr/src/yinit/pyproject.toml:ro
+      - ./setup.py:/usr/src/yinit/setup.py:ro
+      - ./MANIFEST.in:/usr/src/yinit/MANIFEST.in:ro
+      - ./README.md:/usr/src/yinit/README.md:ro
       - ./src/:/usr/src/yinit/src
       - ./targets:/etc/yinit/targets:ro
-    command: "sh -c 'apt update && apt install -y cython3 make'"
+    command: "sh -c 'apt update && apt install -y python3-build python3-pip python3-venv python-is-python3 make'"
     entrypoint: ["/bin/sh", "-c", "sleep infinity"]
+    working_dir: /usr/src/yinit/
     network_mode: host
     environment:
       DBG_SERVER: "127.0.0.1:5678"
@@ -18,11 +23,16 @@ services:
   alpine:
     image: alpine
     volumes:
-      - ./Makefile:/usr/src/yinit/Makefile
+      - ./Makefile:/usr/src/yinit/Makefile:ro
+      - ./pyproject.toml:/root/pyproject.toml:ro
+      - ./setup.py:/usr/src/yinit/setup.py:ro
+      - ./MANIFEST.in:/usr/src/yinit/MANIFEST.in:ro
+      - ./README.md:/usr/src/yinit/README.md:ro
       - ./src/:/usr/src/yinit/src
       - ./targets:/etc/yinit/targets:ro
-      command: "/bin/sh -c 'apk update && apk add cython gcc make musl-dev python3-dev'"
+    command: "/bin/sh -c 'apk update && apk add cython gcc make musl-dev python3-dev'"
     entrypoint: ["/bin/sh", "-c", "sleep infinity"]
+    working_dir: /usr/src/yinit/
     network_mode: host
     environment:
       DBG_SERVER: "127.0.0.1:5678"
@@ -33,10 +43,6 @@ services:
   sandbox:
     build:
       context: sandbox
-    volumes:
-      - ./mpy_init:/root/mpy_init:ro
-      - ./targets:/root/targets:ro
-      - ./pyproject.toml:/root/pyproject.toml:ro
     network_mode: host
     environment:
       DBG_SERVER: "127.0.0.1:5678"

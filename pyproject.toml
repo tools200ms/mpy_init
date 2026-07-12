@@ -1,7 +1,6 @@
 [build-system]
 requires = [
     "setuptools",
-    "wheel",
     "cython"
 ]
 build-backend = "setuptools.build_meta"
@@ -11,6 +10,9 @@ name = "yinit"
 version = "0.1.0"
 description = "Unix init system developed in Python"
 authors = [{name = "Mateusz Piwek", email = "mp@200ms.net"}]
+dependencies = [
+    "cython",
+]
 requires-python = ">=3.9"
 
 [tool.setuptools]
@@ -18,6 +20,7 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
 
 #[tool.setuptools]
 #package-dir = {"" = "src"}
