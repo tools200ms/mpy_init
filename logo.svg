@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="60" viewBox="0 0 240 60">
+  <rect width="100%" height="100%" fill="none"/>
+  <text x="20" y="40" font-family="monospace" font-size="32" dominant-baseline="alphabetic">
+    <tspan fill="yellow">y</tspan>
+    <tspan fill="red">In</tspan>
+    <tspan fill="lightgreen">it</tspan>
+  </text>
+</svg>
