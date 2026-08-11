@@ -1,6 +1,5 @@
-# 'yInit' – Unix init system developed in Python
-
-This is YInit – Unix init system developed in Python. 
+![caption](logo.svg)
+*Unix init system developed in Python.*
 
 > **Q:**
 > 
